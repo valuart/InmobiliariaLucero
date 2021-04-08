@@ -63,7 +63,7 @@ namespace InmobiliariaLucero.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"UPDATE propietarios SET " +
+				string sql = $"UPDATE propietario SET " +
 					$"Nombre=@nombre, Apellido=@apellido, Dni=@dni, Telefono=@telefono, Email=@email " +
 					$"WHERE IdPropietario = @idPropietario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
@@ -90,9 +90,8 @@ namespace InmobiliariaLucero.Models
 			{
 				string sql = $"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, Email" +
 					$" FROM propietario" +
-					$" ORDER BY Apellido, Nombre";/* +
-					$" OFFSET 0 ROWS " +
-					$" FETCH NEXT 10 ROWS ONLY ";*/
+					$" ORDER BY Apellido, Nombre";
+
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -123,11 +122,11 @@ namespace InmobiliariaLucero.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, Email FROM propietario" +
-					$" WHERE IdPropietario=@id";
+					$" WHERE IdPropietario=@idPropietario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+					command.Parameters.Add("@idPropietario", SqlDbType.Int).Value = id;
 					connection.Open();
 					var reader = command.ExecuteReader();
 					while (reader.Read())

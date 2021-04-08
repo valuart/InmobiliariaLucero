@@ -102,7 +102,7 @@ namespace InmobiliariaLucero.Controllers
                 repositorio.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch(Exception ex)
             {
                 return View(i);
             }

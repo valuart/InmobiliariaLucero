@@ -90,9 +90,8 @@ namespace InmobiliariaLucero.Models
 			{
 				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email" +
 					$" FROM Inquilino" +
-					$" ORDER BY Apellido, Nombre";/* +
-					$" OFFSET 0 ROWS " +
-					$" FETCH NEXT 10 ROWS ONLY ";*/
+					$" ORDER BY Apellido, Nombre";
+
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -122,12 +121,12 @@ namespace InmobiliariaLucero.Models
 			Inquilino p = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email FROM Inquilinos" +
-					$" WHERE IdInquilino=@id";
+				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email FROM Inquilino" +
+					$" WHERE IdInquilino=@idInquilino";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+					command.Parameters.Add("@idInquilino", SqlDbType.Int).Value = id;
 					connection.Open();
 					var reader = command.ExecuteReader();
 					while (reader.Read())

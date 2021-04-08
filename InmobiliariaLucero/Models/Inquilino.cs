@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -7,6 +9,8 @@ namespace InmobiliariaLucero.Models
 {
     public class Inquilino
     {
+        [Key]
+        [DisplayName("Codigo")]
         public int IdInquilino { get; set; }
 
         public String Nombre { get; set; }
