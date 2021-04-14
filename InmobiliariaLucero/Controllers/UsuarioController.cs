@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
-   
+    
     public class UsuarioController : Controller
     {
         private readonly IConfiguration configuration;

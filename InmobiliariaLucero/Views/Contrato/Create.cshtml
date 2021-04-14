@@ -12,11 +12,11 @@
         <form asp-action="Create">
 
             <div class="form-group">
-                <label class="control-label">Propietario del Inmueble</label>
+                <label class="control-label">Inmueble</label>
                 <select class="form-control" name="IdInmu">
                     @foreach (var item in inmueble)
                     {
-                     <option value="@item.IdInmueble">@(item.Propietario.Nombre + " " + item.Propietario.Apellido)</option>}
+                     <option value="@item.IdInmueble"> @(item.Direccion)</option>}
                 </select>
                 <span asp-validation-for="IdInmu" class="text-danger"></span>
             </div>

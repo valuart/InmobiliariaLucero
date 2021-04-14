@@ -7,7 +7,7 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
-   
+    
     public class InquilinoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -36,6 +36,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: InquilinoController/Create
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
             return View();
@@ -44,6 +45,7 @@ namespace InmobiliariaLucero.Controllers
         // POST: InquilinoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create(Inquilino inquilino)
         {
             try
@@ -61,6 +63,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: InquilinoController/Edit
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
             var sujeto = rinq.ObtenerPorId(id);
@@ -72,6 +75,7 @@ namespace InmobiliariaLucero.Controllers
         // POST: InquilinoController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, Inquilino inquilino)
         {
             try

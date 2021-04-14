@@ -74,7 +74,6 @@ namespace InmobiliariaLucero.Models
 					command.Parameters.AddWithValue("@email", p.Email);
 					command.Parameters.AddWithValue("@clave", p.Clave);
 					command.Parameters.AddWithValue("@idPropietario", p.IdPropietario);
-				    command.Parameters.AddWithValue("@clave", p.Clave);
 					connection.Open();
 					res = command.ExecuteNonQuery();
 					connection.Close();

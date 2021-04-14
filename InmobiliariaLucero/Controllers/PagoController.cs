@@ -10,7 +10,8 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
-   
+
+    
     public class PagoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -38,9 +39,10 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: PagoController/Create
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
-            
+            ViewBag.Contrato = rc.ObtenerTodos();
             return View();
         }
     
@@ -48,6 +50,7 @@ namespace InmobiliariaLucero.Controllers
         // POST: PagoController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create(Pago pa)
         {
             try
@@ -74,6 +77,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: PagoController/Edit
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
             ViewBag.Contrato = rc.ObtenerTodos();
@@ -85,6 +89,7 @@ namespace InmobiliariaLucero.Controllers
         // POST: PagoController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, Pago pa)
         {
             try
@@ -96,6 +101,7 @@ namespace InmobiliariaLucero.Controllers
             }
             catch (Exception ex)
             {
+                ViewBag.Contrato = rc.ObtenerTodos();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
                 return View(pa);

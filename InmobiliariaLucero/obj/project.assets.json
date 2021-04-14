@@ -6649,19 +6649,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Blue\\.nuget\\packages\\": {}
+    "C:\\Users\\Usuario\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Blue\\Documents\\InmobiliariaLucero\\InmobiliariaLucero\\InmobiliariaLucero.csproj",
+      "projectUniqueName": "C:\\Users\\Usuario\\source\\repos\\InmobiliariaLucero\\InmobiliariaLucero\\InmobiliariaLucero.csproj",
       "projectName": "InmobiliariaLucero",
-      "projectPath": "C:\\Users\\Blue\\Documents\\InmobiliariaLucero\\InmobiliariaLucero\\InmobiliariaLucero.csproj",
-      "packagesPath": "C:\\Users\\Blue\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Blue\\Documents\\InmobiliariaLucero\\InmobiliariaLucero\\obj\\",
+      "projectPath": "C:\\Users\\Usuario\\source\\repos\\InmobiliariaLucero\\InmobiliariaLucero\\InmobiliariaLucero.csproj",
+      "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Usuario\\source\\repos\\InmobiliariaLucero\\InmobiliariaLucero\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Blue\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

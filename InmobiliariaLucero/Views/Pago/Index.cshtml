@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.Importe)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdCon)
+                @(item.Contrato.Inmueble.Direccion)
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { id=item.IdPago }) |

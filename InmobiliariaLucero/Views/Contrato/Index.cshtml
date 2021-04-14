@@ -46,10 +46,10 @@
                 @Html.DisplayFor(modelItem => item.IdContrato)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdInmu)
+                @(item.Inmueble.Direccion)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdInqui)
+                @(item.Inquilino.Apellido)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.FechaInicio)

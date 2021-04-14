@@ -8,7 +8,8 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
-  
+
+    
     public class InmuebleController : Controller
     {
         private readonly IConfiguration configuration;
@@ -45,6 +46,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: InmuebleController/Create
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
             ViewBag.Propietario = rp.ObtenerTodos();
@@ -54,6 +56,7 @@ namespace InmobiliariaLucero.Controllers
         // POST: InmuebleController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create(Inmueble inmueble)
         {
             try
@@ -79,27 +82,30 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: InmuebleController/Edit
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
             var sujeto = ri.ObtenerPorId(id);
-            ViewBag.nombre = sujeto.Propietario.Nombre + " " + sujeto.Propietario.Apellido;
+            ViewBag.Propietario = rp.ObtenerTodos();
             return View(sujeto);
         }
 
         // POST: InmuebleController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, Inmueble inmueble)
         {
             try
             {
                 inmueble.IdInmueble = id;
                 ri.Modificacion(inmueble);
-                TempData["Id"] = "actualizó el inmueble";
+                TempData["Mensaje"] = "Datos guardados correctamente";
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
+                ViewBag.Propietario = rp.ObtenerTodos();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
                 return View(inmueble);
