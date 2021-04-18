@@ -16,7 +16,7 @@
                 @Html.DisplayNameFor(model => model.IdInmueble)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IdPropietario)
+                @Html.DisplayNameFor(model => model.IdPropie)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Direccion)
@@ -40,7 +40,7 @@
                 @Html.DisplayFor(modelItem => item.IdInmueble)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.IdPropietario)
+                @Html.DisplayFor(modelItem => item.IdPropie)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Direccion)
@@ -52,12 +52,17 @@
                 @Html.DisplayFor(modelItem => item.Precio)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Estado)
+                @if (item.Estado)
+                {
+                    <div class="btn-capsul btn btn-success fas fa-check-circle" title="Disponible"></div> }
+                else
+                {
+                    <div class="btn-capsul btn btn-danger fas fa-times-circle" title="No Disponible"></div>}
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.IdInmueble}) |
-                @Html.ActionLink("Details", "Details", new { id=item.IdInmueble}) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.IdInmueble})
+                @Html.ActionLink("Editar", "Edit", new { id = item.IdInmueble }) |
+                @Html.ActionLink("Detalles", "Details", new { id = item.IdInmueble }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.IdInmueble })
             </td>
         </tr>
 }

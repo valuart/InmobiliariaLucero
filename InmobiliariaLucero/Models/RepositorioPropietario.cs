@@ -18,25 +18,26 @@ namespace InmobiliariaLucero.Models
 			this.configuration = configuration;
 			connectionString = configuration["ConnectionStrings:DefaultConnection"];
 		}
-		public int Alta(Propietario e)
+		public int Alta(Propietario p)
 		{
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"INSERT INTO propietario (Nombre, Apellido, Dni, Telefono, Email) " +
-					$"VALUES (@nombre, @apellido, @dni, @telefono, @email)";
+				string sql = $"INSERT INTO propietario (Nombre, Apellido, Dni, Telefono, Email, Clave) " +
+					$"VALUES (@nombre, @apellido, @dni, @telefono, @email, @clave);" +
+					$"SELECT SCOPE_IDENTITY();";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.AddWithValue("@nombre", e.Nombre);
-					command.Parameters.AddWithValue("@apellido", e.Apellido);
-					command.Parameters.AddWithValue("@dni", e.Dni);
-					command.Parameters.AddWithValue("@telefono", e.Telefono);
-					command.Parameters.AddWithValue("@email", e.Email);
+					command.Parameters.AddWithValue("@nombre", p.Nombre);
+					command.Parameters.AddWithValue("@apellido", p.Apellido);
+					command.Parameters.AddWithValue("@dni", p.Dni);
+					command.Parameters.AddWithValue("@telefono", p.Telefono);
+					command.Parameters.AddWithValue("@email", p.Email);
+					command.Parameters.AddWithValue("@clave", p.Clave);
 					connection.Open();
-					res = command.ExecuteNonQuery();
-					command.CommandText = "SELECT SCOPE_IDENTITY()";
-					e.IdPropietario = (int)command.ExecuteScalar();
+					res = Convert.ToInt32(command.ExecuteScalar());
+					p.IdPropietario = res;
 					connection.Close();
 				}
 			}
@@ -47,7 +48,7 @@ namespace InmobiliariaLucero.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"DELETE FROM propietario WHERE IdPropietario = {id}";
+				string sql = $"DELETE FROM Propietario WHERE IdPropietario = {id}";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -58,23 +59,25 @@ namespace InmobiliariaLucero.Models
 			}
 			return res;
 		}
-		public int Modificacion(Propietario e)
+		public int Modificacion(Propietario p)
 		{
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"UPDATE propietario SET " +
-					$"Nombre=@nombre, Apellido=@apellido, Dni=@dni, Telefono=@telefono, Email=@email " +
+					$"Nombre=@nombre, Apellido=@apellido, Dni=@dni, Telefono=@telefono, Email=@email, Clave=@clave " +
 					$"WHERE IdPropietario = @idPropietario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.AddWithValue("@nombre", e.Nombre);
-					command.Parameters.AddWithValue("@apellido", e.Apellido);
-					command.Parameters.AddWithValue("@dni", e.Dni);
-					command.Parameters.AddWithValue("@telefono", e.Telefono);
-					command.Parameters.AddWithValue("@email", e.Email);
-					command.Parameters.AddWithValue("@idPropietarios", e.IdPropietario);
+					command.Parameters.AddWithValue("@nombre", p.Nombre);
+					command.Parameters.AddWithValue("@apellido", p.Apellido);
+					command.Parameters.AddWithValue("@dni", p.Dni);
+					command.Parameters.AddWithValue("@telefono", p.Telefono);
+					command.Parameters.AddWithValue("@email", p.Email);
+					command.Parameters.AddWithValue("@clave", p.Clave);
+					command.Parameters.AddWithValue("@idPropietario", p.IdPropietario);
+				    command.Parameters.AddWithValue("@clave", p.Clave);
 					connection.Open();
 					res = command.ExecuteNonQuery();
 					connection.Close();
@@ -88,8 +91,8 @@ namespace InmobiliariaLucero.Models
 			IList<Propietario> res = new List<Propietario>();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, Email" +
-					$" FROM propietario" +
+				string sql = $"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, Email, Clave " +
+					$" FROM Propietario" +
 					$" ORDER BY Apellido, Nombre";
 
 				using (SqlCommand command = new SqlCommand(sql, connection))
@@ -107,6 +110,7 @@ namespace InmobiliariaLucero.Models
 							Dni = reader.GetString(3),
 							Telefono = reader.GetString(4),
 							Email = reader.GetString(5),
+							Clave = reader.GetString(6),
 						};
 						res.Add(p);
 					}
@@ -121,7 +125,7 @@ namespace InmobiliariaLucero.Models
 			Propietario p = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, Email FROM propietario" +
+				string sql = $"SELECT IdPropietario, Nombre, Apellido, Dni, Telefono, Email, Clave FROM propietario" +
 					$" WHERE IdPropietario=@idPropietario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -139,6 +143,7 @@ namespace InmobiliariaLucero.Models
 							Dni = reader.GetString(3),
 							Telefono = reader.GetString(4),
 							Email = reader.GetString(5),
+							Clave = reader.GetString(6),
 						};
 						return p;
 					}

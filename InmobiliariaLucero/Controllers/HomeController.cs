@@ -20,6 +20,7 @@ namespace InmobiliariaLucero.Controllers
 
         public IActionResult Index()
         {
+            ViewBag.Saludo = "Bienvenidos a Inmobiliaria Lucero";
             return View();
         }
 

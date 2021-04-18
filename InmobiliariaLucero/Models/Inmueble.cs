@@ -13,7 +13,7 @@ namespace InmobiliariaLucero.Models
         [DisplayName("Codigo")]
         public int IdInmueble { get; set; }
 
-        public int IdPropietario { get; set; }
+        public int IdPropie { get; set; }
 
         public Propietario Propietario { get; set; }
        

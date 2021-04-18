@@ -1,0 +1,82 @@
+﻿@model IEnumerable<InmobiliariaLucero.Models.Contrato>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Contratos</h1>
+
+<p>
+    <a asp-action="Create">Agregar Contrato</a> |
+    <a asp-action="Create">Buscar Contratos Disponibles</a> |
+    <a asp-action="Create">Buscar Contratos Vigentes</a> |
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.IdContrato)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdInmu)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IdInqui)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaInicio)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FechaFin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Monto)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estado)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdContrato)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdInmu)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.IdInqui)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaInicio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FechaFin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Monto)
+            </td>
+            <td>   
+                @if (item.Estado)
+                {
+                 <div class="btn-capsul btn btn-success fas fa-check-circle" title="Disponible"></div> }
+                        else
+                        {
+                 <div class="btn-capsul btn btn-danger fas fa-times-circle" title="No Disponible"></div>}
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id = item.IdContrato }) |
+                @Html.ActionLink("Detalle", "Details", new { id = item.IdContrato }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.IdContrato }) |
+                @Html.ActionLink("Pagar", "Pagos", new { id = item.IdContrato }) |
+                @Html.ActionLink("Renovar", "Renovar", new { id = item.IdContrato }) 
+             
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

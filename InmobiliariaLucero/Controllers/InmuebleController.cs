@@ -1,36 +1,41 @@
 ﻿using InmobiliariaLucero.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace InmobiliariaLucero.Controllers
 {
     public class InmuebleController : Controller
     {
         protected readonly IConfiguration configuration;
-        RepositorioInmueble repositorio;
+        RepositorioInmueble ri;
+        RepositorioPropietario rp;
 
         public InmuebleController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            repositorio = new RepositorioInmueble(configuration);
+            ri = new RepositorioInmueble(configuration);
+            rp = new RepositorioPropietario(configuration);
         }
         // GET: InmuebleController
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
-            var lista = repositorio.ObtenerTodos();
+            ViewBag.IdSeleccionado = id;
+            var lista = ri.ObtenerTodos();
+            if (TempData.ContainsKey("Id"))
+                ViewBag.Id = TempData["Id"];
+            if (TempData.ContainsKey("Mensaje"))
+                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
+
         }
 
         // GET: InmuebleController/Details/5
         public ActionResult Details(int id)
         {
             Inmueble i = new Inmueble();
-            i = repositorio.ObtenerPorId(id);
+            i = ri.ObtenerPorId(id);
             return View(i);
 
         }
@@ -38,6 +43,7 @@ namespace InmobiliariaLucero.Controllers
         // GET: InmuebleController/Create
         public ActionResult Create()
         {
+            ViewBag.Propietario = rp.ObtenerTodos();
             return View();
         }
 
@@ -48,11 +54,15 @@ namespace InmobiliariaLucero.Controllers
         {
             try
             {
-                repositorio.Alta(inmueble);
+                ri.Alta(inmueble);
+                TempData["Id"] = "creó el inmueble";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
+                ViewBag.propis = rp.ObtenerTodos();
                 return View(inmueble);
             }
         }
@@ -60,7 +70,8 @@ namespace InmobiliariaLucero.Controllers
         // GET: InmuebleController/Edit/5
         public ActionResult Edit(int id)
         {
-            var sujeto = repositorio.ObtenerPorId(id);
+            var sujeto = ri.ObtenerPorId(id);
+            ViewBag.nombre = sujeto.Propietario.Nombre + " " + sujeto.Propietario.Apellido;
             return View(sujeto);
         }
 
@@ -71,11 +82,15 @@ namespace InmobiliariaLucero.Controllers
         {
             try
             {
-                repositorio.Modificacion(inmueble);
+                inmueble.IdInmueble = id;
+                ri.Modificacion(inmueble);
+                TempData["Id"] = "actualizó el inmueble";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
+                ViewBag.Error = ex.Message;
+                ViewBag.StackTrate = ex.StackTrace;
                 return View(inmueble);
             }
         }
@@ -83,24 +98,37 @@ namespace InmobiliariaLucero.Controllers
         // GET: InmuebleController/Delete/5
         public ActionResult Delete(int id)
         {
-            var sujeto = repositorio.ObtenerPorId(id);
+            var sujeto = ri.ObtenerPorId(id);
+            ViewBag.lugar = sujeto.Propietario.Nombre + " " + sujeto.Propietario.Apellido + " en " + sujeto.Direccion;
             return View(sujeto);
-          
+
         }
 
         // POST: InmuebleController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Inmueble i)
+        public ActionResult Delete(int id, Inmueble inmueble)
         {
             try
             {
-                repositorio.Baja(id);
+                ri.Baja(id);
+                TempData["Id"] = "eliminó el inmueble";
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View(i);
+                if (ex.Message.StartsWith("The DELETE statement conflicted with the REFERENCE"))
+                {
+                    var sujeto = ri.ObtenerPorId(id);
+                    ViewBag.lugar = sujeto.Propietario.Nombre + " " + sujeto.Propietario.Apellido + " en " + sujeto.Direccion;
+                    ViewBag.Error = "No se puede eliminar el inmueble ya que tiene contratos a su nombre";
+                }
+                else
+                {
+                    ViewBag.Error = ex.Message;
+                    ViewBag.StackTrate = ex.StackTrace;
+                }
+                return View(inmueble);
             }
         }
     }

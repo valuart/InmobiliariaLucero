@@ -18,25 +18,25 @@ namespace InmobiliariaLucero.Models
 			this.configuration = configuration;
 			connectionString = configuration["ConnectionStrings:DefaultConnection"];
 		}
-		public int Alta(Inquilino e)
+		public int Alta(Inquilino inq)
 		{
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"INSERT INTO Inquilino (Nombre, Apellido, Dni, Telefono, Email) " +
-					$"VALUES (@nombre, @apellido, @dni, @telefono, @email)";
+					$"VALUES (@nombre, @apellido, @dni, @telefono, @email);" +
+					$"SELECT SCOPE_IDENTITY();";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.AddWithValue("@nombre", e.Nombre);
-					command.Parameters.AddWithValue("@apellido", e.Apellido);
-					command.Parameters.AddWithValue("@dni", e.Dni);
-					command.Parameters.AddWithValue("@telefono", e.Telefono);
-					command.Parameters.AddWithValue("@email", e.Email);
+					command.Parameters.AddWithValue("@nombre", inq.Nombre);
+					command.Parameters.AddWithValue("@apellido", inq.Apellido);
+					command.Parameters.AddWithValue("@dni", inq.Dni);
+					command.Parameters.AddWithValue("@telefono", inq.Telefono);
+					command.Parameters.AddWithValue("@email", inq.Email);
 					connection.Open();
-					res = command.ExecuteNonQuery();
-					command.CommandText = "SELECT SCOPE_IDENTITY()";
-					e.IdInquilino = (int)command.ExecuteScalar();
+					res = Convert.ToInt32(command.ExecuteScalar());
+					inq.IdInquilino = res;
 					connection.Close();
 				}
 			}
@@ -58,7 +58,7 @@ namespace InmobiliariaLucero.Models
 			}
 			return res;
 		}
-		public int Modificacion(Inquilino e)
+		public int Modificacion(Inquilino inq)
 		{
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
@@ -69,12 +69,12 @@ namespace InmobiliariaLucero.Models
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.AddWithValue("@nombre", e.Nombre);
-					command.Parameters.AddWithValue("@apellido", e.Apellido);
-					command.Parameters.AddWithValue("@dni", e.Dni);
-					command.Parameters.AddWithValue("@telefono", e.Telefono);
-					command.Parameters.AddWithValue("@email", e.Email);
-					command.Parameters.AddWithValue("@idInquilino", e.IdInquilino);
+					command.Parameters.AddWithValue("@nombre", inq.Nombre);
+					command.Parameters.AddWithValue("@apellido", inq.Apellido);
+					command.Parameters.AddWithValue("@dni", inq.Dni);
+					command.Parameters.AddWithValue("@telefono", inq.Telefono);
+					command.Parameters.AddWithValue("@email", inq.Email);
+					command.Parameters.AddWithValue("@idInquilino", inq.IdInquilino);
 					connection.Open();
 					res = command.ExecuteNonQuery();
 					connection.Close();
@@ -99,7 +99,7 @@ namespace InmobiliariaLucero.Models
 					var reader = command.ExecuteReader();
 					while (reader.Read())
 					{
-						Inquilino p = new Inquilino
+						Inquilino inq = new Inquilino
 						{
 							IdInquilino = reader.GetInt32(0),
 							Nombre = reader.GetString(1),
@@ -108,7 +108,7 @@ namespace InmobiliariaLucero.Models
 							Telefono = reader.GetString(4),
 							Email = reader.GetString(5),
 						};
-						res.Add(p);
+						res.Add(inq);
 					}
 					connection.Close();
 				}
@@ -118,7 +118,7 @@ namespace InmobiliariaLucero.Models
 
 		public Inquilino ObtenerPorId(int id)
 		{
-			Inquilino p = null;
+			Inquilino inq = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email FROM Inquilino" +
@@ -131,7 +131,7 @@ namespace InmobiliariaLucero.Models
 					var reader = command.ExecuteReader();
 					while (reader.Read())
 					{
-						p = new Inquilino
+						inq = new Inquilino
 						{
 							IdInquilino = reader.GetInt32(0),
 							Nombre = reader.GetString(1),
@@ -140,12 +140,12 @@ namespace InmobiliariaLucero.Models
 							Telefono = reader.GetString(4),
 							Email = reader.GetString(5),
 						};
-						return p;
+						return inq;
 					}
 					connection.Close();
 				}
 			}
-			return p;
+			return inq;
 		}
 	}
 }
