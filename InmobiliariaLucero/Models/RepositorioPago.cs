@@ -89,11 +89,10 @@ namespace InmobiliariaLucero.Models
 			{
 
 				string sql = $"SELECT IdPago, NroPago, FechaPago, Importe, IdCon, " +
-					"c.IdInmu, i.IdPropie, p.Apellido, c.IdInqui, inq.Apellido,  " +
+					"c.IdInmu, i.Direccion, c.IdInqui, inq.Apellido,  " +
 					"c.FechaInicio, c.FechaFin, c.Monto, c.Estado " +
-					"FROM Pago pa, Contrato c, Inmueble i, Propietario p, Inquilino inq " +
+					"FROM Pago pa, Contrato c, Inmueble i, Inquilino inq " +
 					"WHERE pa.IdCon = c.IdContrato AND c.IdInmu = i.IdInmueble " +
-					"AND i.IdPropie = p.IdPropietario " +
 					"AND c.IdInqui = inq.IdInquilino; ";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -116,23 +115,18 @@ namespace InmobiliariaLucero.Models
 								Inmueble = new Inmueble
 								{
 									IdInmueble = reader.GetInt32(5),
-									IdPropie = reader.GetInt32(6),
-									Propietario = new Propietario
-									{
-										IdPropietario = reader.GetInt32(6),
-										Apellido = reader.GetString(7),
-									}
+									Direccion = reader.GetString(6),
 								},
 								IdInqui = reader.GetInt32(7),
 								Inquilino = new Inquilino
 								{
-									IdInquilino = reader.GetInt32(8),
-									Apellido = reader.GetString(9)
+									IdInquilino = reader.GetInt32(7),
+									Apellido = reader.GetString(8)
 								},
-								FechaInicio = reader.GetDateTime(10),
-								FechaFin = reader.GetDateTime(11),
-								Monto = reader.GetDecimal(12),
-								Estado = reader.GetBoolean(13),
+								FechaInicio = reader.GetDateTime(9),
+								FechaFin = reader.GetDateTime(10),
+								Monto = reader.GetDecimal(11),
+								Estado = reader.GetBoolean(12),
 								
 							}
 						};
@@ -149,9 +143,8 @@ namespace InmobiliariaLucero.Models
 			Pago pa = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT pa.IdPago, NroPago, FechaPago, Importe, IdCon, " +
-					$" c.FechaInicio, c.FechaFin, c.Monto, c.Estado" +
-					$" FROM Pago pa INNER JOIN Contrato c ON pa.IdCon = c.IdContrato" +
+				string sql = $"SELECT pa.IdPago, NroPago, FechaPago, Importe, IdCon, ca.IdInmu, ca.IdInqui, ca.FechaInicio, ca.FechaFin, ca.Monto, ca.Estado  " +
+					$"FROM Pago pa INNER JOIN Contrato ca ON pa.IdCon = ca.IdContrato" +
 					$" WHERE pa.IdPago=@idPago";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -175,24 +168,18 @@ namespace InmobiliariaLucero.Models
 								Inmueble = new Inmueble
 								{
 									IdInmueble = reader.GetInt32(5),
-									IdPropie = reader.GetInt32(6),
-									Propietario = new Propietario
-									{
-										IdPropietario = reader.GetInt32(6),
-										Apellido = reader.GetString(7),
-									}
+								
 								},
-								IdInqui = reader.GetInt32(8),
+								IdInqui = reader.GetInt32(6),
 								Inquilino = new Inquilino
 								{
-									IdInquilino = reader.GetInt32(8),
-									Apellido = reader.GetString(9)
+									IdInquilino = reader.GetInt32(6),
+								
 								},
-								FechaInicio = reader.GetDateTime(10),
-								FechaFin = reader.GetDateTime(11),
-								Monto = reader.GetDecimal(12),
-								Estado = reader.GetBoolean(13),
-
+								FechaInicio = reader.GetDateTime(7),
+								FechaFin = reader.GetDateTime(8),
+								Monto = reader.GetDecimal(9),
+								Estado = reader.GetBoolean(10),
 							}
 						};
 					}
@@ -207,10 +194,10 @@ namespace InmobiliariaLucero.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"SELECT IdPago, NroPago, FechaPago, Importe, IdCon, " +
-					$" c.IdInmu, i.IdPropie, p.Apellido, c.IdInqui, inq.Apellido, c.FechaInicio, c.FechaFin, c.Monto, c.Estado " +
+					$" c.IdInmu, i.Direccion, c.IdInqui, inq.Apellido, c.FechaInicio, c.FechaFin, c.Monto, c.Estado " +
 					$" FROM Pago pa, Contrato c, " +
-					"Inmueble i, Propietario p, Inquilino inq WHERE pa.IdCon = c.IdContrato " +
-					"AND c.IdInmu = i.IdInmueble AND i.IdPropie = p.IdPropietario " +
+					"Inmueble i, Inquilino inq WHERE pa.IdCon = c.IdContrato " +
+					"AND c.IdInmu = i.IdInmueble " +
 					"AND c.IdInqui = inq.IdInquilino AND pa.IdCon = @idContrato; ";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -234,23 +221,18 @@ namespace InmobiliariaLucero.Models
 								Inmueble = new Inmueble
 								{
 									IdInmueble = reader.GetInt32(5),
-									IdPropie = reader.GetInt32(6),
-									Propietario = new Propietario
-									{
-										IdPropietario = reader.GetInt32(6),
-										Apellido = reader.GetString(7),
-									}
+									Direccion = reader.GetString(6),
 								},
-								IdInqui = reader.GetInt32(8),
+								IdInqui = reader.GetInt32(7),
 								Inquilino = new Inquilino
 								{
-									IdInquilino = reader.GetInt32(8),
-									Apellido = reader.GetString(9)
+									IdInquilino = reader.GetInt32(7),
+									Apellido = reader.GetString(8)
 								},
-								FechaInicio = reader.GetDateTime(10),
-								FechaFin = reader.GetDateTime(11),
-								Monto = reader.GetDecimal(12),
-								Estado = reader.GetBoolean(13),
+								FechaInicio = reader.GetDateTime(9),
+								FechaFin = reader.GetDateTime(10),
+								Monto = reader.GetDecimal(11),
+								Estado = reader.GetBoolean(12),
 
 							}
 
