@@ -10,44 +10,70 @@
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">InmobiliariaLucero</a>
+              
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item ">
-                            <a class="nav-link" asp-controller="Propietario" asp-action="Index">Propietarios<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Inmueble" asp-action="Index">Inmuebles<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Inquilino" asp-action="Index">Inquilinos<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Contrato" asp-action="Index">Contratos<span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Pago" asp-action="Index">Pagos<span class="sr-only">(current)</span></a>
-                        </li>
-                        @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav ml-auto">
+
+                        @if (!User.Identity.IsAuthenticated)
                         {
-                       <li class="nav-item">
+                           <li class="nav-item">
+                               <a class="nav-link float-right" asp-controller="Usuario" asp-action="Login">Acceder<span class="sr-only">(current)</span></a>
+                           </li> }
+                        else
+                        {
+
+                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                         <ul class="navbar-nav ml-auto">
+
+                    <li class="nav-item ">
+                        <a class="nav-link" asp-controller="Propietarios" asp-action="Index">Propietarios<span class="sr-only">(current)</span></a>
+                    </li>
+
+                         <li class="nav-item">
+                        <a class="nav-link" asp-controller="Inmuebles" asp-action="Index">Inmuebles<span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Inquilinos" asp-action="Index">Inquilinos<span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="ContratoAlquiler" asp-action="Index">Alquileres<span class="sr-only">(current)</span></a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Pago" asp-action="Index">Pagos<span class="sr-only">(current)</span></a>
+                    </li>
+
+                    @if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
+
+                    {
+                        <li class="nav-item">
                         <a class="nav-link" asp-controller="Usuario" asp-action="Index">Usuarios<span class="sr-only">(current)</span></a>
-                      </li>}
+                     </li>}
+
+                    <li class="nav-item">
+                        <a class="nav-link" style="color: #943126 " asp-controller="Usuario" asp-action="Logout">Salir<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>}
+
                     </ul>
-                  </div>
+                </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
