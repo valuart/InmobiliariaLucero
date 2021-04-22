@@ -23,18 +23,18 @@ namespace InmobiliariaLucero.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"INSERT INTO Usuario (Nombre, Apellido, Avatar, Email, Rol, Clave) " +
-					$"VALUES (@nombre, @apellido, @avatar, @email, @rol, @clave);" +
+				string sql = $"INSERT INTO Usuario (Nombre, Apellido, Email, Rol, Clave, Avatar) " +
+					$"VALUES (@nombre, @apellido, @email, @rol, @clave, @avatar);" +
 					$"SELECT SCOPE_IDENTITY();";//devuelve el id insertado
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
 					command.Parameters.AddWithValue("@nombre", u.Nombre);
 					command.Parameters.AddWithValue("@apellido", u.Apellido);
-					command.Parameters.AddWithValue("@avatar", u.Avatar);
 					command.Parameters.AddWithValue("@email", u.Email);
 					command.Parameters.AddWithValue("@rol", u.Rol);
 					command.Parameters.AddWithValue("@clave", u.Clave);
+					command.Parameters.AddWithValue("@avatar", u.Avatar);	
 					connection.Open();
 					res = Convert.ToInt32(command.ExecuteScalar());
 					u.IdUsuario = res;
@@ -65,18 +65,18 @@ namespace InmobiliariaLucero.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"UPDATE Usuario SET Nombre=@nombre, Apellido=@apellido, Avatar=@avatar, Email=@email, Rol=@rol, Clave=@clave " +
-					$"WHERE IdUsuario = @idUsuario";
+				string sql = $"UPDATE Usuario SET Nombre=@nombre, Apellido=@apellido, Email=@email, Rol=@rol, Avatar=@avatar, Clave=@clave " +
+					$"WHERE Id = @id";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
 					command.Parameters.AddWithValue("@nombre", u.Nombre);
 					command.Parameters.AddWithValue("@apellido", u.Apellido);
-					command.Parameters.AddWithValue("@avatar", u.Avatar);
 					command.Parameters.AddWithValue("@email", u.Email);
 					command.Parameters.AddWithValue("@rol", u.Rol);
 					command.Parameters.AddWithValue("@clave", u.Clave);
-					command.Parameters.AddWithValue("@id", u.IdUsuario);
+					command.Parameters.AddWithValue("@avatar", u.Avatar);			
+					command.Parameters.AddWithValue("@idUsuario", u.IdUsuario);
 					connection.Open();
 					res = command.ExecuteNonQuery();
 					connection.Close();
@@ -90,7 +90,7 @@ namespace InmobiliariaLucero.Models
 			IList<Usuario> res = new List<Usuario>();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdUsuario, Nombre, Apellido, Avatar, Email, Rol, Clave" +
+				string sql = $"SELECT IdUsuario, Nombre, Apellido, Email, Rol, Clave, Avatar " +
 					$" FROM Usuario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -104,10 +104,11 @@ namespace InmobiliariaLucero.Models
 							IdUsuario = reader.GetInt32(0),
 							Nombre = reader.GetString(1),
 							Apellido = reader.GetString(2),
-							Avatar = reader["Avatar"].ToString(),
 							Email = reader.GetString(4),
 							Rol = reader.GetInt32(5),
 							Clave = reader.GetString(6),
+							Avatar = reader["Avatar"].ToString(),
+							
 						};
 						res.Add(u);
 					}
@@ -122,7 +123,7 @@ namespace InmobiliariaLucero.Models
 			Usuario u = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdUsuario, Nombre, Apellido, Avatar, Email, Rol, Clave FROM Usuario" +
+				string sql = $"SELECT IdUsuario, Nombre, Apellido, Email, Rol, Clave, Avatar FROM Usuario" +
 					$" WHERE IdUsuario=@idUsuario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -137,10 +138,11 @@ namespace InmobiliariaLucero.Models
 							IdUsuario = reader.GetInt32(0),
 							Nombre = reader.GetString(1),
 							Apellido = reader.GetString(2),
+							Email = reader.GetString(3),
+							Rol = reader.GetInt32(4),
+							Clave = reader.GetString(5),
 							Avatar = reader["Avatar"].ToString(),
-							Email = reader.GetString(4),
-							Rol = reader.GetInt32(5),
-							Clave = reader.GetString(6),
+							
 						};
 					}
 					connection.Close();
@@ -154,7 +156,7 @@ namespace InmobiliariaLucero.Models
 			Usuario u = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdUsuario, Nombre, Apellido, Avatar, Email, Rol, Clave FROM Usuario" +
+				string sql = $"SELECT IdUsuario, Nombre, Apellido, Email, Rol, Clave, Avatar FROM Usuario" +
 					$" WHERE Email=@email";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -169,10 +171,11 @@ namespace InmobiliariaLucero.Models
 							IdUsuario = reader.GetInt32(0),
 							Nombre = reader.GetString(1),
 							Apellido = reader.GetString(2),
+							Email = reader.GetString(3),
+							Rol = reader.GetInt32(4),
+							Clave = reader.GetString(5),
 							Avatar = reader["Avatar"].ToString(),
-							Email = reader.GetString(4),
-							Rol = reader.GetInt32(5),
-							Clave = reader.GetString(6),
+							
 						};
 					}
 					connection.Close();
@@ -187,7 +190,7 @@ namespace InmobiliariaLucero.Models
 			Usuario u = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdUsuario, Nombre, Apellido, Avatar, Email, Rol, Clave FROM Usuario" +
+				string sql = $"SELECT IdUsuario, Nombre, Apellido, Email, Rol, Clave, Avatar FROM Usuario " +
 					$" WHERE Nombre LIKE %@nombre% OR Apellido LIKE %@nombre";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
@@ -202,10 +205,11 @@ namespace InmobiliariaLucero.Models
 							IdUsuario = reader.GetInt32(0),
 							Nombre = reader.GetString(1),
 							Apellido = reader.GetString(2),
+							Email = reader.GetString(3),
+							Rol = reader.GetInt32(4),
+							Clave = reader.GetString(5),
 							Avatar = reader["Avatar"].ToString(),
-							Email = reader.GetString(4),
-							Rol = reader.GetInt32(5),
-							Clave = reader.GetString(6),
+						
 						};
 						res.Add(u);
 					}
@@ -214,10 +218,5 @@ namespace InmobiliariaLucero.Models
 			}
 			return res;
 		}
-
-        internal object ObtenerPorEmail(object email)
-        {
-            throw new NotImplementedException();
-        }
-    }
+	}
 }

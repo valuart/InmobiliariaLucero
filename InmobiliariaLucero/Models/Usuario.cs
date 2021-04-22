@@ -10,9 +10,8 @@ namespace InmobiliariaLucero.Models
 {
     public enum enRoles
     {
-        Administrador = 1,
-        Autorizados = 1,
-        Permitidos = 2,
+        SuperAdministrador = 1,
+        Administrador = 2,
         Empleado = 3,
     }
     public class Usuario
@@ -30,7 +29,7 @@ namespace InmobiliariaLucero.Models
         [Required, DataType(DataType.Password)]
         public string Clave { get; set; }
         public string Avatar { get; set; }
-        public IFormFile AvatarA{ get; set; }
+        
 
         [DisplayName("Rol")]
         public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";

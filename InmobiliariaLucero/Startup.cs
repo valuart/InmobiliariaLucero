@@ -32,27 +32,20 @@ namespace InmobiliariaLucero
                 services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options =>//el sitio web valida con cookie
                 {
-                        options.LoginPath = "/Usuarios/Login";
-                        options.LogoutPath = "/Usuarios/Logout";
+                        options.LoginPath = "/Usuario/Login";
+                        options.LogoutPath = "/Usuario/Logout";
                         options.AccessDeniedPath = "/Home/Restringido";
 
                     });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Administrador", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "SuperAdministrador"));
+            });
 
-                services.AddAuthorization(options =>
-                {
-                    options.AddPolicy("Administrador", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador"));
-                    options.AddPolicy("Empleado", policy => policy.RequireClaim(ClaimTypes.Role, "Empleado"));
-                    options.AddPolicy("Propietario", policy => policy.RequireClaim(ClaimTypes.Role, "Propietario"));
-                    options.AddPolicy("Permitidos", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "Empleado"));
-                    options.AddPolicy("Autorizados", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "Propietario"));
-                });
+             services.AddControllersWithViews();
 
-
-                services.AddControllersWithViews();
-
-
-            }
+        }
 
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
