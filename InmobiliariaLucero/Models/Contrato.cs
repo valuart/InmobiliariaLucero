@@ -18,9 +18,9 @@ namespace InmobiliariaLucero.Models
         [Required, Display(Name = "Locatario")]
         public Inquilino Inquilino { get; set; }
         public int IdInqui { get; set; }
-        [Required, Display(Name = "Fecha Inicio")]
+        [Required, Display(Name = "Fecha Inicio"), DataType(DataType.Date)]
         public DateTime FechaInicio { get; set; }
-        [Display(Name = "Fecha Fin")]
+        [Display(Name = "Fecha Fin"), DataType(DataType.Date)] 
         public DateTime FechaFin { get; set; }
         [Required, Display(Name = "Importe")]
         public decimal Monto { get; set; }
