@@ -232,30 +232,5 @@ namespace InmobiliariaLucero.Controllers
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Perfil()
-        {
-            ViewData["Title"] = "Mi perfil";
-            var u = ru.ObtenerPorEmail(User.Identity.Name);
-            return View(u);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Perfil(Usuario u)
-        {
-            try
-            {
-
-                return RedirectToAction(nameof(Index));
-
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = ex.Message;
-                TempData["StackTrace"] = ex.StackTrace;
-                return RedirectToAction(nameof(Index));
-            }
-        }
-
     }
 }

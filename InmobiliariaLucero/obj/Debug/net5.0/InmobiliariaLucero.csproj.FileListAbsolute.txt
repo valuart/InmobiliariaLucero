@@ -285,3 +285,5 @@ C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\R
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Create.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Edit.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Delete.cshtml.g.cs
+C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Login.cshtml.g.cs
+C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Shared\_Login.cshtml.g.cs
