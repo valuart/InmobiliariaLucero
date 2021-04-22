@@ -66,10 +66,7 @@ namespace InmobiliariaLucero.Controllers
         {
             ViewBag.Contrato = rc.ObtenerTodos();
             var sujeto = rpa.ObtenerPorId(id);
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
+          
             return View(sujeto);
         }
 
@@ -97,10 +94,7 @@ namespace InmobiliariaLucero.Controllers
         public ActionResult Delete(int id)
         {
             var sujeto = rpa.ObtenerPorId(id);
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
+           
             return View(sujeto);
         }
 

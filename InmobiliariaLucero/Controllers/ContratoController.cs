@@ -120,10 +120,7 @@ namespace InmobiliariaLucero.Controllers
         {
             ViewBag.Inquilino = rinq.ObtenerTodos();
             ViewBag.Inmueble = ri.ObtenerTodos();
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
+           
             var sujeto = rc.ObtenerPorId(id);
             return View(sujeto);
         }
@@ -214,10 +211,7 @@ namespace InmobiliariaLucero.Controllers
         public ActionResult Renovar(int id)
         {
             var c = rc.ObtenerPorId(id);
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
+           
             var fechaFinal = c.FechaFin;
             var fechaAhora = DateTime.Now;
             if (fechaFinal > fechaAhora)
@@ -310,10 +304,7 @@ namespace InmobiliariaLucero.Controllers
         public ActionResult Buscar(int id)
         {
             var lista = rpa.ObtenerTodosPorIdContrato(id);
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
+           
             ViewBag.IdSelect = id;
             return View(lista);
         }

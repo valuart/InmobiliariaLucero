@@ -165,7 +165,7 @@ namespace InmobiliariaLucero.Controllers
                 return View(usuario);
             }
         }
-     //   [AllowAnonymous]
+        [AllowAnonymous]
         public ActionResult Login()
         {
             return View();
@@ -173,7 +173,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: Usuario/Login
         [HttpPost]
-     //   [AllowAnonymous]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(Login l)
         {
@@ -222,7 +222,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-    //    [AllowAnonymous]
+        [AllowAnonymous]
         [Route("salir", Name = "logout")]
         // GET: Home/Logout
         public async Task<ActionResult> Logout()
