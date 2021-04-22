@@ -1,8 +1,7 @@
 # InmobiliariaLucero
 Primera Entrega con clase, respositorios,vistas para Inquilino y Propietarios
-Falta mejorar el diseño de las vistas.
+Segunda Entrega con ABM inmueble, pago y contrato (contrato funciona hasta el delete, faltan vistas de los demas metodos)
+
 Base de datos en zip
 
-NUEVOS CAMBIOS. 
-CLASE INMUEBLE, REPOSITORIO Y VISTA INDEX
-FALTA CREAR TABLA INMUEBLE EN BD
+
