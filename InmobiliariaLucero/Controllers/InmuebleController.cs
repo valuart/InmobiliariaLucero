@@ -21,12 +21,7 @@ namespace InmobiliariaLucero.Controllers
         // GET: InmuebleController
         public ActionResult Index(int id)
         {
-            ViewBag.IdSeleccionado = id;
             var lista = ri.ObtenerTodos();
-            if (TempData.ContainsKey("Id"))
-                ViewBag.Id = TempData["Id"];
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
 
         }

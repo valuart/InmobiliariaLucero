@@ -1,5 +1,7 @@
 ﻿using InmobiliariaLucero.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -11,16 +13,55 @@ namespace InmobiliariaLucero.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        protected readonly IConfiguration configuration;
+        RepositorioInmueble ri;
+        RepositorioPropietario rp;
+        public HomeController(IConfiguration configuration)
         {
-            _logger = logger;
+            this.configuration = configuration;
+            ri = new RepositorioInmueble(configuration);
+            rp = new RepositorioPropietario(configuration);
         }
-
         public IActionResult Index()
         {
-            ViewBag.Saludo = "Bienvenidos a Inmobiliaria Lucero";
+            if (User.IsInRole("Administrador"))
+            {
+                return RedirectToAction(nameof(SiPermitido));
+            }
+            else if (User.IsInRole("Empleado"))
+            {
+                return RedirectToAction(nameof(NoPermitido));
+            }
+            else if (User.IsInRole("Propietario"))
+            {
+                return RedirectToAction(nameof(Privado));
+            }
+            else
+            {
+                return View();
+            }
+        }
+        [Authorize(Policy = "Administrador")]
+        public IActionResult SiPermitido()
+        {
+            return View();
+        }
+        [Authorize(Policy = "Propietario")]
+        public IActionResult Privado()
+        {
+            Propietario p = rp.ObtenerPorEmail(User.Identity.Name);
+            var lista = ri.BuscarPorPropietario(p.IdPropietario);
+            return View(lista);
+
+        }
+
+        [Authorize(Policy = "Empleado")]
+        public IActionResult NoPermitido()
+        {
+            return View();
+        }
+        public IActionResult Restringido()
+        {
             return View();
         }
 

@@ -25,12 +25,6 @@ namespace InmobiliariaLucero.Controllers
         public ActionResult Index(int id)
         {
             var lista = rpa.ObtenerTodos();
-            if (TempData.ContainsKey("Id"))
-                ViewBag.Id = TempData["Id"];
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
             return View(lista);
         }
 

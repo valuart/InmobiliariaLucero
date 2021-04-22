@@ -245,5 +245,38 @@ namespace InmobiliariaLucero.Models
 			}
 			return res;
 		}
+		public List<Inmueble> BuscarPorPropietario(int id)
+		{
+			List<Inmueble> res = new List<Inmueble>();
+			Inmueble inm = null;
+			using (SqlConnection connection = new SqlConnection(connectionString))
+			{
+				string sql = $"SELECT IdInmueble, IdPropie, Direccion, Tipo, Precio, Estado" +
+					$" FROM Inmuebles" +
+					$" WHERE IdPropie=@idpropietario AND Disponible = 1";
+				using (SqlCommand command = new SqlCommand(sql, connection))
+				{
+					command.Parameters.Add("@idpropietario", SqlDbType.Int).Value = id;
+					command.CommandType = CommandType.Text;
+					connection.Open();
+					var reader = command.ExecuteReader();
+					while (reader.Read())
+					{
+						inm = new Inmueble
+						{
+							IdInmueble = reader.GetInt32(0),
+							IdPropie = reader.GetInt32(1),
+							Direccion = reader.GetString(2),
+							Tipo = reader.GetString(3),
+							Precio = reader.GetDecimal(4),
+							Estado = reader.GetBoolean(5),
+						};
+						res.Add(inm);
+					}
+					connection.Close();
+				}
+			}
+			return res;
+		}
 	}
 }

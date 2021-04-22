@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -18,237 +20,197 @@ namespace InmobiliariaLucero.Controllers
     public class UsuarioController : Controller
     {
         protected readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment envir;
         RepositorioUsuario ru;
 
         public UsuarioController(IConfiguration configuration)
         {
             this.configuration = configuration;
+            envir = envir;
             ru = new RepositorioUsuario(configuration);
         }
 
         // GET: UsuarioController
-        [Authorize(Policy = "Administrador")]
-        public ActionResult Index()
+        [Authorize(Policy = "Administrador")] 
+       public ActionResult Index(int id)
         {
             var lista = ru.ObtenerTodos();
-            if (TempData.ContainsKey("Id"))
-                ViewBag.Id = TempData["Id"];
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
             return View(lista);
         }
 
+        // GET: Admin/Details/5
 
-        // GET: UsuarioController/Create
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        // GET: Admin/Create
         [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
-            ViewBag.Roles = Usuario.ObtenerRoles();
             return View();
-         
         }
 
-        // POST: UsuarioController/Create
+        // POST: Admin/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create(Usuario u)
         {
-            try 
-            { 
-            if (ModelState.IsValid)
-            {
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: u.Clave,
-                    salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-                    prf: KeyDerivationPrf.HMACSHA1,
-                    iterationCount: 1000,
-                    numBytesRequested: 256 / 8));
-                u.Clave = hashed;
-                u.Avatar = "";
-                u.Rol = User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador") ? u.Rol : (int)enRoles.Empleado;
-                var res = ru.Alta(u);
-                TempData["Id"] = u.IdUsuario;
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                    return View(u);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Roles = Usuario.ObtenerRoles();
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
-                return View(u);
-            }
-        }
-
-        // GET: UsuarioController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            ViewData["Title"] = "Editar usuario";
-            var u = ru.ObtenerPorId(id);
-            ViewBag.Roles = Usuario.ObtenerRoles();
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
-            return View(u);
-        }
-
-        // POST: UsuarioController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, Usuario u)
-        {
-            var vista = "Edit";
+            if (!ModelState.IsValid)
+                return View();
             try
             {
-                var usuario = ru.ObtenerPorId(id);
-                if (User.IsInRole("Usuario"))
-                {
-                    vista = "Perfil";
-                    var usuarioActual = ru.ObtenerPorEmail(User.Identity.Name);
-                    if (usuarioActual.IdUsuario != id)
-                    {
-                        return RedirectToAction(nameof(Index), "Home");
-                    }
-                    else
-                    {
-                        ru.Modificacion(u);
-                        TempData["Mensaje"] = "Datos guardados correctamente";
-                        return RedirectToAction(nameof(Index));
-                    }
+                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: u.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+                u.Clave = hashed;
 
-                }
-               
-                u.Clave = usuario.Clave;
-                u.Avatar = usuario.Avatar;
-                ru.Modificacion(u);
-                TempData["Mensaje"] = "Datos guardados correctamente";
-
+                var nbreRnd = Guid.NewGuid();
+                int res = ru.Alta(u);
+              
                 return RedirectToAction(nameof(Index));
-
             }
-            catch (Exception ex)
+            catch
             {
-                ViewBag.Roles = Usuario.ObtenerRoles();
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
-                return View(vista, u);
+                return View();
             }
         }
 
-        // GET: UsuarioController/Delete/5
+        // GET: Admin/Edit/5
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Edit(int id)
+        {
+            var i = ru.ObtenerPorId(id);
+            return View(i);
+        }
+
+        // POST: Admin/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Edit(int id, Usuario i)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+
+
+                    i.Clave = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: i.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes("Salt"),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
+                    int res = ru.Modificacion(i);
+                    return RedirectToAction(nameof(Index));
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Error al actualizar!!");
+                    return View();
+                }
+
+
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
+        // GET: Admin/Delete/5
         [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
-            var u = ru.ObtenerPorId(id);
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
-            return View(u);
+            var i = ru.ObtenerPorId(id);
+            return View(i);
         }
 
-        // POST: UsuarioController/Delete/5
-       
+        // POST: Admin/Delete/5
         [HttpPost]
-        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Usuario u)
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Delete(int id, Usuario i)
         {
             try
             {
-                ru.Baja(id);
-                TempData["Mensaje"] = "Eliminación realizada correctamente";
+                int res = ru.Baja(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch (Exception ex)
+            catch
             {
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
-                return View(u);
+                return View();
             }
         }
-
         [AllowAnonymous]
         public ActionResult Login()
         {
             return View();
         }
 
-        // POST: Usuario/Login
         [HttpPost]
-        [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginView loginView)
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(Login login)
         {
             try
             {
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: loginView.Clave,
-                    salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-                    prf: KeyDerivationPrf.HMACSHA1,
-                    iterationCount: 1000,
-                    numBytesRequested: 256 / 8));
-                var user = ru.ObtenerPorEmail(loginView.Email);
-                if (user == null || user.Clave != hashed)
+                if (ModelState.IsValid)
                 {
-                    ViewBag.Mensaje = "Datos inválidos";
-                    return View();
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                     password: login.Clave,
+                     salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                     prf: KeyDerivationPrf.HMACSHA1,
+                     iterationCount: 1000,
+                     numBytesRequested: 256 / 8));
+
+                    var e = ru.ObtenerPorEmail(login.Email);
+                    if (e == null)
+                    {
+                        ModelState.AddModelError("", "El email y/o el password son incorrectos");
+                        return View();
+                    }
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, e.Email),
+                        new Claim("FullName", e.Nombre + " " + e.Apellido),
+                       // new Claim(ClaimTypes.Role, e.Rol),
+                    };
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
+
+
+                    return RedirectToAction(nameof(Index), "Home");
                 }
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.Email),
-                    new Claim("FullName", user.Nombre + " " + user.Apellido),
-                    new Claim(ClaimTypes.Role, user.RolNombre),
-                   // new Claim("Id", user.Id + ""),
-                };
-
-                var claimsIdentity = new ClaimsIdentity(
-                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                var authProperties = new AuthenticationProperties
-                {
-                    AllowRefresh = true,
-                };
-
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-                return RedirectToAction(nameof(Index), "Home");
+                return View();
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
                 ModelState.AddModelError("", ex.Message);
                 return View();
             }
         }
 
-        [AllowAnonymous]
-        [Route("salir", Name = "logout")]
-        // GET: Home/Logout
-        public async Task<ActionResult> Logout()
+        public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
 
-        public ActionResult Perfil()
-        {
-            ViewData["Title"] = "Mi perfil";
-            var u = ru.ObtenerPorEmail(User.Identity.Name);
-            ViewBag.Roles = Usuario.ObtenerRoles();
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
-            return View(u);
-        }
-
     }
+
 }
+
+

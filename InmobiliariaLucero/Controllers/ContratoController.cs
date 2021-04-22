@@ -30,14 +30,7 @@ namespace InmobiliariaLucero.Controllers
         // GET: ContratoController
         public ActionResult Index(int id)
         {
-            ViewBag.IdSeleccionado = id;
             var lista = rc.ObtenerTodos();
-            if (TempData.ContainsKey("Id"))
-                ViewBag.Id = TempData["Id"];
-            if (TempData.ContainsKey("Mensaje"))
-                ViewBag.Mensaje = TempData["Mensaje"];
-            if (TempData.ContainsKey("Error"))
-                ViewBag.Error = TempData["Error"];
             return View(lista);
         }
 

@@ -214,5 +214,10 @@ namespace InmobiliariaLucero.Models
 			}
 			return res;
 		}
-	}
+
+        internal object ObtenerPorEmail(object email)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

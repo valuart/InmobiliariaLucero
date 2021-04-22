@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -9,8 +10,9 @@ namespace InmobiliariaLucero.Models
 {
     public enum enRoles
     {
-        SuperAdministrador = 1,
-        Administrador = 2,
+        Administrador = 1,
+        Autorizados = 1,
+        Permitidos = 2,
         Empleado = 3,
     }
     public class Usuario
@@ -28,7 +30,8 @@ namespace InmobiliariaLucero.Models
         [Required, DataType(DataType.Password)]
         public string Clave { get; set; }
         public string Avatar { get; set; }
-      
+        public IFormFile AvatarA{ get; set; }
+
         [DisplayName("Rol")]
         public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";
 
