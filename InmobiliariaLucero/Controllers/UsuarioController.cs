@@ -23,7 +23,7 @@ namespace InmobiliariaLucero.Controllers
         private readonly IWebHostEnvironment envir;
         RepositorioUsuario ru;
 
-        public UsuarioController(IConfiguration configuration, IHostingEnvironment envir)
+        public UsuarioController(IConfiguration configuration, IWebHostEnvironment envir)
         {
             this.configuration = configuration;
             this.envir = (IWebHostEnvironment)envir;
@@ -32,7 +32,7 @@ namespace InmobiliariaLucero.Controllers
 
         // GET: UsuarioController
         // GET: Usuario
-      //  [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Index()
         {
             var lista = ru.ObtenerTodos();
@@ -40,7 +40,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: Usuario/Create
-    //    [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
             ViewBag.Roles = Usuario.ObtenerRoles();
@@ -49,7 +49,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: Usuario/Create
         [HttpPost]
-    //    [Authorize(Policy = "Administrador")]
+       [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Usuario u)
         {
@@ -104,7 +104,7 @@ namespace InmobiliariaLucero.Controllers
                 var usuario = ru.ObtenerPorId(id);
                 if (User.IsInRole("Usuario"))
                 {
-                    vista = "Perfil";
+                   
                     var usuarioActual = ru.ObtenerPorEmail(User.Identity.Name);
                     if (usuarioActual.IdUsuario != id)
                     {
@@ -139,7 +139,7 @@ namespace InmobiliariaLucero.Controllers
 
 
         // GET: Usuario/Delete/5
-    //    [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var u = ru.ObtenerPorId(id);
@@ -148,7 +148,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: Usuario/Delete/5
         [HttpPost]
-    //    [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Usuario usuario)
         {
