@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Models
 {
-	public class RepositorioContrato
+	public class RepositorioContrato : RepositorioBase, IRepositorioContrato
 	{
-		private readonly IConfiguration configuration;
-		private readonly string connectionString;
-
-		public RepositorioContrato(IConfiguration configuration)
+		public RepositorioContrato(IConfiguration configuration) : base(configuration)
 		{
-			this.configuration = configuration;
-			connectionString = configuration["ConnectionStrings:DefaultConnection"];
+
 		}
+
 		public int Alta(Contrato c)
 		{
 			int res = -1;

@@ -1,4 +1,6 @@
 ﻿using InmobiliariaLucero.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -6,17 +8,23 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
+    [Authorize]
     public class InmuebleController : Controller
     {
-        protected readonly IConfiguration configuration;
-        RepositorioInmueble ri;
-        RepositorioPropietario rp;
+        private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment environment;
+        private readonly RepositorioInmueble ri;
+        private readonly RepositorioPropietario rp;
+        private readonly RepositorioContrato rc;
 
-        public InmuebleController(IConfiguration configuration)
+        public InmuebleController(IConfiguration configuration, IWebHostEnvironment environment, RepositorioInmueble ri, RepositorioPropietario rp, RepositorioContrato rc )
         {
             this.configuration = configuration;
-            ri = new RepositorioInmueble(configuration);
-            rp = new RepositorioPropietario(configuration);
+            this.environment = environment;
+            this.ri = ri;
+            this.rp = rp;
+            this.rc = rc;
+           
         }
         // GET: InmuebleController
         public ActionResult Index(int id)
@@ -49,15 +57,22 @@ namespace InmobiliariaLucero.Controllers
         {
             try
             {
-                ri.Alta(inmueble);
-                TempData["Id"] = "creó el inmueble";
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    ri.Alta(inmueble);
+                    TempData["Id"] = inmueble.IdInmueble;
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewBag.Propietarios = rp.ObtenerTodos();
+                    return View(inmueble);
+                }
             }
             catch (Exception ex)
             {
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
-                ViewBag.propis = rp.ObtenerTodos();
                 return View(inmueble);
             }
         }
@@ -91,6 +106,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: InmuebleController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = ri.ObtenerPorId(id);
@@ -101,6 +117,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: InmuebleController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Inmueble inmueble)
         {

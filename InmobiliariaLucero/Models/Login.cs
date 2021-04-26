@@ -14,5 +14,6 @@ namespace InmobiliariaLucero.Models
         [Required]
         [DataType(DataType.Password)]
         public String Clave { get; set; }
+       
     }
 }

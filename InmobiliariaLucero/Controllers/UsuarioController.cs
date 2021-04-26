@@ -19,19 +19,18 @@ namespace InmobiliariaLucero.Controllers
     [Authorize]
     public class UsuarioController : Controller
     {
-        protected readonly IConfiguration configuration;
+        private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment envir;
-        RepositorioUsuario ru;
+        private readonly RepositorioUsuario ru;
 
         public UsuarioController(IConfiguration configuration, IWebHostEnvironment envir)
         {
             this.configuration = configuration;
-            this.envir = (IWebHostEnvironment)envir;
             ru = new RepositorioUsuario(configuration);
+            this.envir = envir;
         }
 
         // GET: UsuarioController
-        // GET: Usuario
         [Authorize(Policy = "Administrador")]
         public ActionResult Index()
         {
@@ -39,41 +38,62 @@ namespace InmobiliariaLucero.Controllers
             return View(lista);
         }
 
+        [Authorize(Policy = "Administrador")]
+        public ActionResult Details(int id)
+        {
+            var e = ru.ObtenerPorId(id);
+            return View(e);
+        }
+
         // GET: Usuario/Create
         [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
+
             ViewBag.Roles = Usuario.ObtenerRoles();
             return View();
         }
 
         // POST: Usuario/Create
         [HttpPost]
-       [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Create(Usuario u)
         {
+            if (!ModelState.IsValid)
+                return View();
             try
             {
-                if (ModelState.IsValid)
-                {
-                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
                         password: u.Clave,
                         salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
                         prf: KeyDerivationPrf.HMACSHA1,
                         iterationCount: 1000,
                         numBytesRequested: 256 / 8));
-                    u.Clave = hashed;
-                    u.Avatar = "";
-                    u.Rol = User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador") ? u.Rol : (int)enRoles.Empleado;
-                    var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
-                    var res = ru.Alta(u);
-                    TempData["Id"] = u.IdUsuario;
+                u.Clave = hashed;
+                var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
+                int res = ru.Alta(u);
+                TempData["Id"] = u.IdUsuario;
+                if (u.AvatarFile != null && u.IdUsuario > 0)
+                {
+                    string wwwPath = envir.WebRootPath;
+                    string path = Path.Combine(wwwPath, "Uploads");
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
 
-                    return RedirectToAction(nameof(Index));
+                    //Path.GetFileName(u.AvatarFile.FileName);//este nombre se puede repetir
+                    string fileName = "avatar_" + u.IdUsuario + Path.GetExtension(u.AvatarFile.FileName);
+                    string pathCompleto = Path.Combine(path, fileName);
+                    u.Avatar = Path.Combine("/Uploads/", fileName);
+                    using (FileStream stream = new FileStream(pathCompleto, FileMode.Create))
+                    {
+                        u.AvatarFile.CopyTo(stream);
+                    }
+                    ru.Modificacion(u);
                 }
-                else
-                    return View(u);
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
@@ -84,7 +104,8 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: Usuario/Edit/5
+        // GET: Admin/Edit/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
             ViewData["Title"] = "Editar usuario";
@@ -93,9 +114,10 @@ namespace InmobiliariaLucero.Controllers
             return View(u);
         }
 
-        // POST: Usuario/Edit/5
+        // POST: Admin/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id, Usuario u)
         {
             var vista = "Edit";
@@ -104,7 +126,7 @@ namespace InmobiliariaLucero.Controllers
                 var usuario = ru.ObtenerPorId(id);
                 if (User.IsInRole("Usuario"))
                 {
-                   
+                    vista = "Perfil";
                     var usuarioActual = ru.ObtenerPorEmail(User.Identity.Name);
                     if (usuarioActual.IdUsuario != id)
                     {
@@ -136,101 +158,161 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-
-
-        // GET: Usuario/Delete/5
+        // GET: Admin/Delete/5
         [Authorize(Policy = "Administrador")]
-        public ActionResult Delete(int id)
-        {
-            var u = ru.ObtenerPorId(id);
-            return View(u);
-        }
-
-        // POST: Usuario/Delete/5
-        [HttpPost]
-        [Authorize(Policy = "Administrador")]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, Usuario usuario)
-        {
-            try
+            public ActionResult Delete(int id)
             {
-                ru.Baja(id);
-                TempData["Mensaje"] = "Eliminación realizada correctamente";
-                return RedirectToAction(nameof(Index));
+                var u = ru.ObtenerPorId(id);
+                return View(u);
             }
-            catch (Exception ex)
-            {
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
-                return View(usuario);
-            }
-        }
-        [AllowAnonymous]
-        public ActionResult Login()
-        {
-            return View();
-        }
 
-        // POST: Usuario/Login
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(Login l)
-        {
-            try
+            // POST: Admin/Delete/5
+            [HttpPost]
+            [ValidateAntiForgeryToken]
+            [Authorize(Policy = "Administrador")]
+            public ActionResult Delete(int id, Usuario u)
             {
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: l.Clave,
-                    salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
-                    prf: KeyDerivationPrf.HMACSHA1,
-                    iterationCount: 1000,
-                    numBytesRequested: 256 / 8));
-                var user = ru.ObtenerPorEmail(l.Email);
-                if (user == null || user.Clave != hashed)
+                try
                 {
-                    ViewBag.Mensaje = "Datos inválidos";
+                    int res = ru.Baja(id);
+                TempData["Mensaje"] = "Usuario Eliminado";
+                return RedirectToAction(nameof(Index));
+                }
+                catch
+                {
                     return View();
                 }
-                var claims = new List<Claim>
+            }
+
+        // GET: Usuarios/Edit/5  
+        public ActionResult Perfil()
+        {
+            ViewData["Title"] = "Mi perfil";
+            var u = ru.ObtenerPorEmail(User.Identity.Name);
+            ViewBag.Roles = Usuario.ObtenerRoles();
+            return View("Edit", u);
+        }
+
+        [Authorize]
+        public IActionResult Avatar()
+        {
+            var u = ru.ObtenerPorEmail(User.Identity.Name);
+            string fileName = "avatar_" + u.IdUsuario + Path.GetExtension(u.Avatar);
+            string wwwPath = envir.WebRootPath;
+            string path = Path.Combine(wwwPath, "Uploads");
+            string pathCompleto = Path.Combine(path, fileName);
+
+            //leer el archivo
+            byte[] fileBytes = System.IO.File.ReadAllBytes(pathCompleto);
+            //devolverlo
+            return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
+        }
+
+        // GET: Usuarios/Create
+        [Authorize]
+        public ActionResult Foto()
+        {
+            try
+            {
+                var u = ru.ObtenerPorEmail(User.Identity.Name);
+                var stream = System.IO.File.Open(
+                    Path.Combine(envir.WebRootPath, u.Avatar.Substring(1)),
+                    FileMode.Open,
+                    FileAccess.Read);
+                var ext = Path.GetExtension(u.Avatar);
+                return new FileStreamResult(stream, $"image/{ext.Substring(1)}");
+            }
+            catch  //(Exception ex)
+            {
+                throw;
+            }
+        }
+        // GET: Usuarios/Create
+        [Authorize]
+        public ActionResult Datos()
+        {
+            try
+            {
+                var u = ru.ObtenerPorEmail(User.Identity.Name);
+                string buffer = "Nombre;Apellido;Email" + Environment.NewLine +
+                    $"{u.Nombre};{u.Apellido};{u.Email}";
+                var stream = new MemoryStream(System.Text.Encoding.Unicode.GetBytes(buffer));
+                var res = new FileStreamResult(stream, "text/plain");
+                res.FileDownloadName = "Datos.csv";
+                return res;
+            }
+            catch //(Exception ex)
+            {
+                throw;
+            }
+        }
+
+        [AllowAnonymous] 
+        // GET: Usuarios/Login/
+        public ActionResult Login()
+        {
+            return PartialView("Login", new Login());
+        }
+
+        // POST: Usuarios/Login/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login(Login login)
+        {
+            try
+            {
+                var returnUrl = String.IsNullOrEmpty(TempData["returnUrl"] as string) ? "/Home" : TempData["returnUrl"].ToString();
+                if (ModelState.IsValid)
                 {
-                    new Claim(ClaimTypes.Name, user.Email),
-                    new Claim("FullName", user.Nombre + " " + user.Apellido),
-                    new Claim(ClaimTypes.Role, user.RolNombre),
-                    new Claim("IdUsuario", user.IdUsuario + ""),
-                };
+                    string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                        password: login.Clave,
+                        salt: System.Text.Encoding.ASCII.GetBytes(configuration["Salt"]),
+                        prf: KeyDerivationPrf.HMACSHA1,
+                        iterationCount: 1000,
+                        numBytesRequested: 256 / 8));
 
-                var claimsIdentity = new ClaimsIdentity(
-                    claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var e = ru.ObtenerPorEmail(login.Email);
+                    if (e == null || e.Clave != hashed)
+                    {
+                        ModelState.AddModelError("", "El email o la clave no son correctos");
+                        TempData["returnUrl"] = returnUrl;
+                        return View();
+                    }
 
-                var authProperties = new AuthenticationProperties
-                {
-                    AllowRefresh = true,
-                };
+                    var claims = new List<Claim>
+                    {
+                        new Claim(ClaimTypes.Name, e.Email),
+                        new Claim("FullName", e.Nombre + " " + e.Apellido),
+                        new Claim(ClaimTypes.Role, e.RolNombre),
+                    };
 
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(claimsIdentity),
-                    authProperties);
-                return RedirectToAction(nameof(Index), "Home");
+                    var claimsIdentity = new ClaimsIdentity(
+                        claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(claimsIdentity));
+                    TempData.Remove("returnUrl");
+                    return Redirect(returnUrl);
+                }
+                TempData["returnUrl"] = returnUrl;
+                return View();
             }
             catch (Exception ex)
             {
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
                 ModelState.AddModelError("", ex.Message);
                 return View();
             }
         }
 
-        [AllowAnonymous]
+        // GET: /salir
         [Route("salir", Name = "logout")]
-        // GET: Home/Logout
         public async Task<ActionResult> Logout()
         {
             await HttpContext.SignOutAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme);
             return RedirectToAction("Index", "Home");
         }
-
     }
 }

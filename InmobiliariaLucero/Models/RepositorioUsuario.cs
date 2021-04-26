@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Models
 {
-    public class RepositorioUsuario
-    {
-		private readonly IConfiguration configuration;
-		private readonly string connectionString;
-
-		public RepositorioUsuario(IConfiguration configuration)
+    public class RepositorioUsuario : RepositorioBase, IRepositorioUsuario
+	{
+		public RepositorioUsuario(IConfiguration configuration) : base(configuration)
 		{
-			this.configuration = configuration;
-			connectionString = configuration["ConnectionStrings:DefaultConnection"];
+
 		}
+
 		public int Alta(Usuario u)
 		{
 			int res = -1;
@@ -34,7 +31,14 @@ namespace InmobiliariaLucero.Models
 					command.Parameters.AddWithValue("@email", u.Email);
 					command.Parameters.AddWithValue("@rol", u.Rol);
 					command.Parameters.AddWithValue("@clave", u.Clave);
-					command.Parameters.AddWithValue("@avatar", u.Avatar);	
+					if (String.IsNullOrEmpty(u.Avatar))
+					{
+						command.Parameters.AddWithValue("@avatar", DBNull.Value);
+					}
+					else
+					{
+						command.Parameters.AddWithValue("@avatar", u.Avatar);
+					}
 					connection.Open();
 					res = Convert.ToInt32(command.ExecuteScalar());
 					u.IdUsuario = res;
@@ -65,8 +69,8 @@ namespace InmobiliariaLucero.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"UPDATE Usuario SET Nombre=@nombre, Apellido=@apellido, Email=@email, Rol=@rol, Avatar=@avatar, Clave=@clave " +
-					$"WHERE Id = @id";
+				string sql = $"UPDATE Usuario SET Nombre=@nombre, Apellido=@apellido, Email=@email, Rol=@rol, Clave=@clave, Avatar=@avatar,  " +
+					$"WHERE IdUsuario = @idUsuario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -104,9 +108,9 @@ namespace InmobiliariaLucero.Models
 							IdUsuario = reader.GetInt32(0),
 							Nombre = reader.GetString(1),
 							Apellido = reader.GetString(2),
-							Email = reader.GetString(4),
-							Rol = reader.GetInt32(5),
-							Clave = reader.GetString(6),
+							Email = reader.GetString(3),
+							Rol = reader.GetInt32(4),
+							Clave = reader.GetString(5),
 							Avatar = reader["Avatar"].ToString(),
 							
 						};

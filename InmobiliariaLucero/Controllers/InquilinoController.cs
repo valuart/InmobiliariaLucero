@@ -1,4 +1,5 @@
 ﻿using InmobiliariaLucero.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -6,16 +7,18 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
+    [Authorize]
     public class InquilinoController : Controller
     {
-        protected readonly IConfiguration configuration;
-        RepositorioInquilino rinq;
+        private readonly IConfiguration configuration;
+        private readonly RepositorioInquilino rinq;
 
-        public InquilinoController(IConfiguration configuration)
+        public InquilinoController(IConfiguration configuration, RepositorioInquilino rinq)
         {
             this.configuration = configuration;
-            rinq = new RepositorioInquilino(configuration);
+            this.rinq = rinq;
         }
+
 
 
 

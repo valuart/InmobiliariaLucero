@@ -1,4 +1,5 @@
 ﻿using InmobiliariaLucero.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -9,26 +10,25 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
+    [Authorize]
     public class ContratoController : Controller
     {
-        protected readonly IConfiguration configuration;
-        RepositorioContrato rc;
-        RepositorioPago rpa;
-        RepositorioInmueble ri;
-        RepositorioInquilino rinq;
+        private readonly IConfiguration configuration;
+        private readonly RepositorioContrato rc;
+        private readonly RepositorioInmueble ri;
+        private readonly RepositorioInquilino rinq;
+        private readonly RepositorioPago rpa;
 
-
-        public ContratoController(IConfiguration configuration)
+        public ContratoController(RepositorioContrato rc, RepositorioInmueble ri, RepositorioInquilino rinq, RepositorioPago rpa, IConfiguration configuration)
         {
+            this.rc = rc;
+            this.ri= ri;
+            this.rinq = rinq;
+            this.rpa = rpa;
             this.configuration = configuration;
-            rc = new RepositorioContrato(configuration);
-            rpa = new RepositorioPago(configuration);
-            ri = new RepositorioInmueble(configuration);
-            rinq = new RepositorioInquilino(configuration);
-
         }
         // GET: ContratoController
-        public ActionResult Index(int id)
+        public ActionResult Index()
         {
             var lista = rc.ObtenerTodos();
             return View(lista);
@@ -145,6 +145,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: ContratoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var contrato = rc.ObtenerPorId(id);
@@ -158,7 +159,7 @@ namespace InmobiliariaLucero.Controllers
             var ahora = DateTime.Now;
             if (cantidadSupuesta == cantidadCoutas && fechaFinal > ahora)
             {
-                TimeSpan mora = fechaFinal - ahora;
+                TimeSpan tp = fechaFinal - ahora;
                 var meses = t.TotalDays / 30;
                 var mes = (int)Math.Round(meses);
                 if (mes == 1)
@@ -184,6 +185,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: ContratoController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Contrato c)
         {
@@ -296,7 +298,7 @@ namespace InmobiliariaLucero.Controllers
                 pago.Importe = contrato.Monto / mes;
                 rpa.Alta(pago);
                 TempData["Mensaje"] = "Pago realizado exitosamente!!";
-                return RedirectToAction("Buscar", "Contrato", new { id = id });
+                return RedirectToAction("Buscar", "Contrato", new { id });
             }
 
         }

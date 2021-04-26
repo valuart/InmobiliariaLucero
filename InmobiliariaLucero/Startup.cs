@@ -12,7 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-
+using InmobiliariaLucero.Models;
 
 namespace InmobiliariaLucero
 {
@@ -22,30 +22,48 @@ namespace InmobiliariaLucero
         public Startup(IConfiguration configuration)
         {
             this.configuration = configuration;
-
         }
-
-        public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>//el sitio web valida con cookie
                 {
-                    options.LoginPath = "/Usuario/Login";
-                    options.LogoutPath = "/Usuario/Logout";
+                    options.LoginPath = "/Usuarios/Login";
+                    options.LogoutPath = "/Usuarios/Logout";
                     options.AccessDeniedPath = "/Home/Restringido";
 
                 });
 
+
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("Administrador", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador", "SuperAdministrador"));
+                options.AddPolicy("SuperAdministrador", policy => policy.RequireClaim(ClaimTypes.Role, "SuperAdministrador"));
+                options.AddPolicy("Administrador", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador"));
+                options.AddPolicy("Administrador", policy => policy.RequireClaim(ClaimTypes.Role, "Administrador"));
+                options.AddPolicy("Empleado", policy => policy.RequireClaim(ClaimTypes.Role, "Empleado"));
             });
+            services.AddMvc();
+            services.AddSignalR();//añade signalR
+                                  //IUserIdProvider permite cambiar el ClaimType usado para obtener el UserIdentifier en Hub
+                                  // services.AddSingleton<IUserIdProvider, UserIdProvider>();
+            /*
+            Transient objects are always different; a new instance is provided to every controller and every service.
+            Scoped objects are the same within a request, but different across different requests.
+            Singleton objects are the same for every object and every request.
+            */
 
-            services.AddControllersWithViews();
+
+            services.AddTransient<IRepositorio<Propietario>, RepositorioPropietario>();
+            services.AddTransient<IRepositorioPropietario, RepositorioPropietario>();
+            services.AddTransient<IRepositorio<Inquilino>, RepositorioInquilino>();
+            services.AddTransient<IRepositorio<Inmueble>, RepositorioInmueble>();
+            services.AddTransient<IRepositorioInmueble, RepositorioInmueble>();
+            services.AddTransient<IRepositorio<Pago>, RepositorioPago>();
+            services.AddTransient<IRepositorioPago, RepositorioPago>();
+            services.AddTransient<IRepositorio<Contrato>, RepositorioContrato>();
+            services.AddTransient<IRepositorioContrato, RepositorioContrato>();
+            services.AddTransient<IRepositorio<Usuario>, RepositorioUsuario>();
+            services.AddTransient<IRepositorioUsuario, RepositorioUsuario>();
 
         }
 
@@ -65,20 +83,16 @@ namespace InmobiliariaLucero
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseRouting();
-            app.UseCookiePolicy(new CookiePolicyOptions
-            {
-                MinimumSameSitePolicy = SameSiteMode.None,
-            });
 
+            app.UseRouting();
+            app.UseCookiePolicy(new CookiePolicyOptions { MinimumSameSitePolicy = SameSiteMode.None, });
+            //Habilita la autorizacion y autenticacion
             app.UseAuthentication();
             app.UseAuthorization();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();//página amarilla de errores
             }
-
 
             app.UseEndpoints(endpoints =>
             {
@@ -87,7 +101,5 @@ namespace InmobiliariaLucero
                 endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
             });
         }
-
-
     }
 }

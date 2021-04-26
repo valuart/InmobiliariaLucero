@@ -1,4 +1,5 @@
 ﻿using InmobiliariaLucero.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -6,17 +7,19 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
+    [Authorize]
     public class PropietarioController : Controller
     {
-        protected readonly IConfiguration configuration;
-        RepositorioPropietario rp;
+        private readonly IConfiguration configuration;
+        private readonly RepositorioPropietario rp;
+        private readonly RepositorioInmueble ri;
 
-        public PropietarioController(IConfiguration configuration)
+        public PropietarioController(RepositorioPropietario rp, RepositorioInmueble ri, IConfiguration configuration)
         {
+            this.rp = rp;
+            this.ri= ri;
             this.configuration = configuration;
-            rp = new RepositorioPropietario(configuration);
         }
-
 
 
         // GET: PropietarioController
@@ -95,6 +98,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: PropietarioController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = rp.ObtenerPorId(id);
@@ -104,6 +108,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: PropietarioController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Propietario p)
         {

@@ -7,16 +7,13 @@ using System.Data.SqlClient;
 
 namespace InmobiliariaLucero.Models
 {
-    public class RepositorioPago
-    {
-		private readonly IConfiguration configuration;
-		private readonly string connectionString;
-
-		public RepositorioPago(IConfiguration configuration)
+    public class RepositorioPago : RepositorioBase, IRepositorioPago
+	{
+		public RepositorioPago(IConfiguration configuration) : base(configuration)
 		{
-			this.configuration = configuration;
-			connectionString = configuration["ConnectionStrings:DefaultConnection"];
+
 		}
+
 		public int Alta(Pago pa)
 		{
 			int res = -1;

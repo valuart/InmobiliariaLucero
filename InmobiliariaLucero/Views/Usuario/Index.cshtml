@@ -33,9 +33,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Avatar)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RolNombre)
-            </th>
+            
             <th></th>
         </tr>
     </thead>
@@ -61,11 +59,9 @@
                 @Html.DisplayFor(modelItem => item.Clave)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Avatar)
+                <img width="32" src="@item.Avatar">
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RolNombre)
-            </td>
+           
             <td>
               
                     @Html.ActionLink("Editar", "Edit", new { id = item.IdUsuario }) |

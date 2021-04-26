@@ -1,4 +1,5 @@
 ﻿using InmobiliariaLucero.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -9,17 +10,18 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
+    [Authorize]
     public class PagoController : Controller
     {
-        protected readonly IConfiguration configuration;
-        RepositorioPago rpa;
-        RepositorioContrato rc;
+        private readonly IConfiguration config;
+        private readonly RepositorioPago rpa;
+        private readonly RepositorioContrato rc;
 
-        public PagoController(IConfiguration configuration)
+        public PagoController(IConfiguration config, RepositorioPago rpa, RepositorioContrato rc)
         {
-            this.configuration = configuration;
-            rpa = new RepositorioPago(configuration);
-            rc = new RepositorioContrato(configuration);
+            this.config = config;
+            this.rpa = rpa;
+            this.rc = rc;
         }
         // GET: PagoController
         public ActionResult Index(int id)
@@ -91,6 +93,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: PagoController/Delete/5
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = rpa.ObtenerPorId(id);
@@ -100,6 +103,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: PagoController/Delete/5
         [HttpPost]
+        [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Pago pa)
         {

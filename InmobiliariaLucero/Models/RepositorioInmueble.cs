@@ -8,16 +8,14 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Models
 {
-    public class RepositorioInmueble
-    {
-		private readonly IConfiguration configuration;
-		private readonly string connectionString;
-
-		public RepositorioInmueble(IConfiguration configuration)
+    public class RepositorioInmueble : RepositorioBase, IRepositorioInmueble
+	{
+		public RepositorioInmueble(IConfiguration configuration) : base(configuration)
 		{
-			this.configuration = configuration;
-			connectionString = configuration["ConnectionStrings:DefaultConnection"];
+
 		}
+
+
 		public int Alta(Inmueble i)
 		{
 			int res = -1;
@@ -245,6 +243,45 @@ namespace InmobiliariaLucero.Models
 			}
 			return res;
 		}
-		
+		public List<Inmueble> BuscarPorPropietario(int id)
+		{
+			List<Inmueble> res = new List<Inmueble>();
+			Inmueble inm = null;
+			using (SqlConnection connection = new SqlConnection(connectionString))
+			{
+				string sql = $"SELECT IdInmueble, IdPropie, Direccion, Tipo, Precio, Estado" +
+					$" FROM Inmuebles" +
+					$" WHERE IdPropie=@idPropietario AND Disponible = 1";
+				using (SqlCommand command = new SqlCommand(sql, connection))
+				{
+					command.Parameters.Add("@idPropietario", SqlDbType.Int).Value = id;
+					command.CommandType = CommandType.Text;
+					connection.Open();
+					var reader = command.ExecuteReader();
+					while (reader.Read())
+					{
+						inm = new Inmueble
+						{
+							IdInmueble = reader.GetInt32(0),
+							Propietario = new Propietario
+							{
+								IdPropietario = reader.GetInt32(1),
+								Nombre = reader.GetString(2),
+								Apellido = reader.GetString(3),
+							},
+							Direccion = reader.GetString(4),
+							Tipo = reader.GetString(5),
+							Precio = reader.GetDecimal(6),
+							Estado = reader.GetBoolean(7),
+
+						};
+						res.Add(inm);
+					}
+					connection.Close();
+				}
+			}
+			return res;
+		}
+
 	}
 }
