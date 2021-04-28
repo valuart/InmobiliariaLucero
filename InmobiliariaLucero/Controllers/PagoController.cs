@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
-   // [Authorize]
+   
     public class PagoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -23,14 +23,14 @@ namespace InmobiliariaLucero.Controllers
             rc = new RepositorioContrato(configuration);
             rpa = new RepositorioPago(configuration);
         }
-        // GET: PagoController
+        // GET: PagoController/Index
         public ActionResult Index()
         {
             var lista = rpa.ObtenerTodos();
             return View(lista);
         }
 
-        // GET: PagoController/Details/5
+        // GET: PagoController/Details
         public ActionResult Details(int id)
         {
             var sujeto = rpa.ObtenerPorId(id);
@@ -73,7 +73,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: PagoController/Edit/5
+        // GET: PagoController/Edit
         public ActionResult Edit(int id)
         {
             ViewBag.Contrato = rc.ObtenerTodos();
@@ -82,7 +82,7 @@ namespace InmobiliariaLucero.Controllers
             return View(sujeto);
         }
 
-        // POST: PagoController/Edit/5
+        // POST: PagoController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Pago pa)
@@ -102,7 +102,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: PagoController/Delete/5
+        // GET: PagoController/Delete
       //  [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
@@ -111,7 +111,7 @@ namespace InmobiliariaLucero.Controllers
             return View(sujeto);
         }
 
-        // POST: PagoController/Delete/5
+        // POST: PagoController/Delete
         [HttpPost]
       //  [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]

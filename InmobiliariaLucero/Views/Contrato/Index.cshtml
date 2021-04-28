@@ -7,9 +7,9 @@
 <h1>Contratos</h1>
 
 <p>
-    <a asp-action="Create">Agregar Contrato</a> |
-    <a asp-action="Create">Buscar Contratos Disponibles</a> |
-    <a asp-action="Create">Buscar Contratos Vigentes</a> |
+    <a asp-action="Create">Agregar Contrato</a> 
+   @*@ <a asp-action="Create">Buscar Contratos Disponibles</a> |
+    <a asp-action="Create">Buscar Contratos Vigentes</a> |*@
 </p>
 <table class="table">
     <thead>
@@ -70,10 +70,11 @@
             </td>
             <td>
                 @Html.ActionLink("Editar", "Edit", new { id = item.IdContrato }) |
-                @Html.ActionLink("Eliminar", "Delete", new { id = item.IdContrato }) |
-                @Html.ActionLink("Pagar", "Pagos", new { id = item.IdContrato }) |
-                @Html.ActionLink("Renovar", "Renovar", new { id = item.IdContrato }) 
-             
+                @Html.ActionLink("Detalles", "Details", new { id = item.IdContrato }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id = item.IdContrato }) 
+                @*  @Html.ActionLink("Pagar", "Pagos", new { id = item.IdContrato }) |
+        @Html.ActionLink("Renovar", "Renovar", new { id = item.IdContrato }) *@
+
             </td>
         </tr>
         }

@@ -290,4 +290,4 @@ C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\R
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Home\Restringido.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Details.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Perfil.cshtml.g.cs
-C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Contrato\Pagos.cshtml.g.cs
+C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Contrato\Details.cshtml.g.cs

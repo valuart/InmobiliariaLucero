@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
-   // [Authorize]
+   
     public class UsuarioController : Controller
     {
         private readonly IConfiguration configuration;
@@ -31,7 +31,7 @@ namespace InmobiliariaLucero.Controllers
             this.envir = envir;
         }
 
-        // GET: UsuarioController
+        // GET: UsuarioController/Index
     //    [Authorize(Policy = "Administrador")]
         public ActionResult Index()
         {
@@ -39,14 +39,15 @@ namespace InmobiliariaLucero.Controllers
             return View(lista);
         }
 
-     //   [Authorize(Policy = "Administrador")]
+        // GET: UsuarioController/Details
+        //   [Authorize(Policy = "Administrador")]
         public ActionResult Details(int id)
         {
             var e = ru.ObtenerPorId(id);
             return View(e);
         }
 
-        // GET: Usuario/Create
+        // GET: UsuarioController/Create
      //   [Authorize(Policy = "Administrador")]
         public ActionResult Create()
         {
@@ -55,7 +56,7 @@ namespace InmobiliariaLucero.Controllers
             return View();
         }
 
-        // POST: Usuario/Create
+        // POST: UsuarioController/Create
         [HttpPost]
     //    [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
@@ -106,7 +107,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: Admin/Edit/5
+        // GET: Admin/Edit
     //    [Authorize(Policy = "Administrador")]
         public ActionResult Edit(int id)
         {
@@ -116,7 +117,7 @@ namespace InmobiliariaLucero.Controllers
             return View(sujeto);
         }
 
-        // POST: Admin/Edit/5
+        // POST: Admin/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
     //    [Authorize(Policy = "Administrador")]
@@ -160,7 +161,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: Admin/Delete/5
+        // GET: Admin/Delete
      //   [Authorize(Policy = "Administrador")]
             public ActionResult Delete(int id)
             {
@@ -168,7 +169,7 @@ namespace InmobiliariaLucero.Controllers
                 return View(u);
             }
 
-            // POST: Admin/Delete/5
+            // POST: Admin/Delete
             [HttpPost]
             [ValidateAntiForgeryToken]
      //       [Authorize(Policy = "Administrador")]
@@ -186,7 +187,7 @@ namespace InmobiliariaLucero.Controllers
                 }
             }
 
-        // GET: Usuarios/Perfil/5  
+        // GET: UsuarioController/Perfil  
         public ActionResult Perfil()
         {
             ViewData["Title"] = "Mi perfil";
@@ -194,7 +195,7 @@ namespace InmobiliariaLucero.Controllers
       //      ViewBag.Roles = Usuario.ObtenerRoles();
             return View("Edit", u);
         }
-        // GET: Usuarios/Perfil/5 
+        // POST: UsuarioController/Perfil/5 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Perfil(Usuario user)
@@ -231,7 +232,8 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        //  [Authorize]
+        //  [Authorize
+        //  GET: UsuarioController/Avatar  
         public IActionResult Avatar()
         {
             var u = ru.ObtenerPorEmail(User.Identity.Name);
@@ -246,7 +248,7 @@ namespace InmobiliariaLucero.Controllers
             return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, fileName);
         }
 
-        // GET: Usuarios/Create
+        // GET: UsuarioController/Foto
      //   [Authorize]
         public ActionResult Foto()
         {
@@ -265,7 +267,7 @@ namespace InmobiliariaLucero.Controllers
                 throw;
             }
         }
-        // GET: Usuarios/Create
+        // GET: UsuarioController/Datos
      //   [Authorize]
         public ActionResult Datos()
         {
@@ -287,14 +289,14 @@ namespace InmobiliariaLucero.Controllers
         }
 
     //   [AllowAnonymous] 
-        // GET: Usuarios/Login/
+        // GET: UsuarioController/Login/
         public ActionResult Login(string returnUrl)
         {
             TempData["returnUrl"] = returnUrl;
             return View();
         }
 
-        // POST: Usuarios/Login/
+        // POST: UsuarioController/Login/
         [HttpPost]
         [ValidateAntiForgeryToken]
     //    [AllowAnonymous]
@@ -346,7 +348,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: /salir
+        // GET: UsuarioController/salir
         [Route("salir", Name = "logout")]
         public async Task<ActionResult> Logout()
         {

@@ -7,7 +7,7 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
-   // [Authorize]
+   
     public class InquilinoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -19,7 +19,7 @@ namespace InmobiliariaLucero.Controllers
             rinq = new RepositorioInquilino(configuration);
         }
 
-        // GET: InquilinoController
+        // GET: InquilinoController/Index
         public ActionResult Index()
         {
          
@@ -27,7 +27,7 @@ namespace InmobiliariaLucero.Controllers
             return View(lista);
         }
 
-        // GET: InquilinoController/Details/5
+        // GET: InquilinoController/Details
         public ActionResult Details(int id)
         {
             var sujeto = rinq.ObtenerPorId(id);
@@ -60,7 +60,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: InquilinoController/Edit/5
+        // GET: InquilinoController/Edit
         public ActionResult Edit(int id)
         {
             var sujeto = rinq.ObtenerPorId(id);
@@ -69,7 +69,7 @@ namespace InmobiliariaLucero.Controllers
 
         }
 
-        // POST: InquilinoController/Edit/5
+        // POST: InquilinoController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Inquilino inquilino)
@@ -88,7 +88,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: InquilinoController/Delete/5
+        // GET: InquilinoController/Delete
         public ActionResult Delete(int id)
         {
             var sujeto = rinq.ObtenerPorId(id);
@@ -97,7 +97,7 @@ namespace InmobiliariaLucero.Controllers
 
         }
 
-        // POST: InquilinoController/Delete/5
+        // POST: InquilinoController/Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Inquilino inquilino)

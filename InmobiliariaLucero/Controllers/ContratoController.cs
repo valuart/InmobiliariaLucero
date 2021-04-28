@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
-   // [Authorize]
+   
     public class ContratoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -27,11 +27,20 @@ namespace InmobiliariaLucero.Controllers
             rpa = new RepositorioPago(configuration);
             this.configuration = configuration;
         }
-        // GET: ContratoController
+        // GET: ContratoController/Index
         public ActionResult Index(int id)
         {
             var lista = rc.ObtenerTodos();
             return View(lista);
+        }
+
+        // GET: ContratoController/Details
+
+        public ActionResult Details(int id)
+        {
+            var contrato = rc.ObtenerPorId(id);
+            return View(contrato);
+
         }
 
         // GET: ContratoController/Create
@@ -120,7 +129,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: ContratoController/Edit/5
+        // GET: ContratoController/Edit
         public ActionResult Edit(int id)
         {
             ViewBag.Inquilino = rinq.ObtenerTodos();
@@ -130,7 +139,7 @@ namespace InmobiliariaLucero.Controllers
             return View(sujeto);
         }
 
-        // POST: ContratoController/Edit/5
+        // POST: ContratoController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Contrato c)
@@ -149,7 +158,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: ContratoController/Delete/5
+        // GET: ContratoController/Delete
        // [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
@@ -188,7 +197,7 @@ namespace InmobiliariaLucero.Controllers
 
         }
 
-        // POST: ContratoController/Delete/5
+        // POST: ContratoController/Delete
         [HttpPost]
       //  [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
@@ -215,134 +224,161 @@ namespace InmobiliariaLucero.Controllers
 
             }
         }
-        // GET: ContratoController/Renovar/5
-        public ActionResult Renovar(int id)
-        {
-            var c = rc.ObtenerPorId(id);
-           
-            var fechaFinal = c.FechaFin;
-            var fechaAhora = DateTime.Now;
-            if (fechaFinal > fechaAhora)
-            {
-                TempData["Error"] = "No puede renovar un contrato que aun no ha terminado!!";
-                return RedirectToAction(nameof(Index));
+        /* // GET: ContratoController/Renovar
+         * 
+         public ActionResult Renovar(int id)
+         {
+             var c = rc.ObtenerPorId(id);
 
-            }
-            var inq = rinq.ObtenerPorId(c.IdInqui);
-            var i = ri.ObtenerPorId(c.IdInmu);
-            ViewBag.Inquilino = inq;
-            ViewBag.Inmueble = i;
-            return View(c);
-        }
-        // POST: ContratoController/Renovar/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Renovar(int id, Contrato c)
-        {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var contrato = rc.ObtenerPorId(id);
-                    contrato.Estado = false;
-                    rc.Modificacion(contrato);
+             var fechaFinal = c.FechaFin;
+             var fechaAhora = DateTime.Now;
+             if (fechaFinal > fechaAhora)
+             {
+                 TempData["Error"] = "No puede renovar un contrato que aun no ha terminado!!";
+                 return RedirectToAction(nameof(Index));
 
-                    c.IdInmu = contrato.IdInmu;
-                    c.IdInqui = contrato.IdInqui;
-                    c.Estado = true;
-                    int res = rc.Alta(c);
-                    TempData["Id"] = c.IdContrato;
-                    return RedirectToAction(nameof(Index));
-                }
-                else
-                    return View(c);
-            }
-            catch (Exception ex)
-            {
-                ViewBag.Error = ex.Message;
-                ViewBag.StackTrate = ex.StackTrace;
-                return View(c);
-            }
-        }
-        // GET: ContratoController/Pagos/5
-        public ActionResult Pagos(int id)
-        {
-            var contrato = rc.ObtenerPorId(id);
-            var listaVieja = rpa.ObtenerTodosPorIdContrato(contrato.IdContrato);
-            var nroCuota = listaVieja.Count;
-            var fechaInicio = contrato.FechaInicio;
-            var fechaFinal = contrato.FechaFin;
-            TimeSpan t = fechaFinal - fechaInicio;
-            var meses = t.TotalDays / 30;
-            var mes = (int)Math.Round(meses);
-            var pago = new Pago();
-            pago.NroPago = nroCuota + 1;
-            pago.FechaPago = DateTime.Now;
-            pago.IdCon = contrato.IdContrato;
-            pago.Importe = contrato.Monto / mes;
+             }
+             var inq = rinq.ObtenerPorId(c.IdInqui);
+             var i = ri.ObtenerPorId(c.IdInmu);
+             ViewBag.Inquilino = inq;
+             ViewBag.Inmueble = i;
+             return View(c);
+         }
 
-            return View(pago);
-        }
-        // POST: ContratoController/Pagos/5
-        public ActionResult Pagos(int id, Pago pago)
-        {
-            var contrato = rc.ObtenerPorId(id);
-            var listaVieja = rpa.ObtenerTodosPorIdContrato(contrato.IdContrato);
-            var nroCuota = listaVieja.Count;
-            var fechaInicio = contrato.FechaInicio;
-            var fechaFinal = contrato.FechaFin;
-            TimeSpan t = fechaFinal - fechaInicio;
-            var meses = t.TotalDays / 30;
-            var mes = (int)Math.Round(meses);
-            if (nroCuota >= mes)
-            {
-                TempData["Error"] = "Ya termino de realizar los pagos";
-                return RedirectToAction("Buscar", "Contrato");
-            }
-            else
-            {
-                pago.NroPago = nroCuota + 1;
-                pago.FechaPago = DateTime.Now;
-                pago.IdCon = contrato.IdContrato;
-                pago.Importe = contrato.Monto / mes;
-                rpa.Alta(pago);
-                TempData["Mensaje"] = "Pago realizado exitosamente!!";
-                return RedirectToAction("Buscar", "Contrato", new { id });
-            }
+         // POST: ContratoController/Renovar
 
-        }
-        // GET: ContratoController/Buscar/5
-        public ActionResult Buscar(int id)
-        {
-            var lista = rpa.ObtenerTodosPorIdContrato(id);
-           
-            ViewBag.IdSelect = id;
-            return View(lista);
-        }
-        public ActionResult MostrarDisponibles(Contrato c)
-        {
-            var fechaInicio = c.FechaInicio;
-            var fechaFinal = c.FechaFin;
-            ViewBag.FechaInicioBusqueda = fechaInicio.Date.ToShortDateString();
-            ViewBag.FechaFinalBusqueda = fechaFinal.Date.ToShortDateString();
-            var lista = ri.ObtenerTodosDisponibles(fechaInicio, fechaFinal);
-            return View(lista);
-        }
-        // GET: ContratoController/MostrarVigentes/5
-        public ActionResult MostrarVigentes(Contrato ca)
-        {
-            var fechaInicio = ca.FechaInicio;
-            var fechaFinal = ca.FechaFin;
-            ViewBag.FechaInicioBusqueda = fechaInicio.Date.ToShortDateString();
-            ViewBag.FechaFinalBusqueda = fechaFinal.Date.ToShortDateString();
-            var lista = rc.ObtenerTodosVigentes(fechaInicio, fechaFinal);
-            IList<Contrato> lista2punto0 = new List<Contrato>();
-            foreach (var item in lista)
-            {
-                lista2punto0.Add(item);
-            }
-            return View(lista);
-        }
+         [HttpPost]
+         [ValidateAntiForgeryToken]
+         public ActionResult Renovar(int id, Contrato c)
+         {
+             try
+             {
+                 if (ModelState.IsValid)
+                 {
+                     var contrato = rc.ObtenerPorId(id);
+                     contrato.Estado = false;
+                     rc.Modificacion(contrato);
+
+                     c.IdInmu = contrato.IdInmu;
+                     c.IdInqui = contrato.IdInqui;
+                     c.Estado = true;
+                     int res = rc.Alta(c);
+                     TempData["Id"] = c.IdContrato;
+                     return RedirectToAction(nameof(Index));
+                 }
+                 else
+                     return View(c);
+             }
+             catch (Exception ex)
+             {
+                 ViewBag.Error = ex.Message;
+                 ViewBag.StackTrate = ex.StackTrace;
+                 return View(c);
+             }
+         }
+
+         // GET: ContratoController/Pagar
+
+         public ActionResult Pagar(int id)
+         {
+             var contrato = rc.ObtenerPorId(id);
+             var listaVieja = rpa.ObtenerTodosPorIdContrato(contrato.IdContrato);
+             var nroCuota = listaVieja.Count;
+             var fechaInicio = contrato.FechaInicio;
+             var fechaFinal = contrato.FechaFin;
+             TimeSpan t = fechaFinal - fechaInicio;
+             var meses = t.TotalDays / 30;
+             var mes = (int)Math.Round(meses);
+             var pago = new Pago();
+             pago.NroPago = nroCuota + 1;
+             pago.FechaPago = DateTime.Now;
+             pago.IdCon = contrato.IdContrato;
+             pago.Importe = contrato.Monto / mes;
+
+             return View(pago);
+         }
+
+         // POST: ContratoController/Pagar
+
+         public ActionResult Pagar(int id, Pago pago)
+         {
+             var contrato = rc.ObtenerPorId(id);
+             var listaVieja = rpa.ObtenerTodosPorIdContrato(contrato.IdContrato);
+             var nroCuota = listaVieja.Count;
+             var fechaInicio = contrato.FechaInicio;
+             var fechaFinal = contrato.FechaFin;
+             TimeSpan t = fechaFinal - fechaInicio;
+             var meses = t.TotalDays / 30;
+             var mes = (int)Math.Round(meses);
+             if (nroCuota >= mes)
+             {
+                 TempData["Error"] = "Ya termino de realizar los pagos";
+                 return RedirectToAction("Buscar", "Contrato");
+             }
+             else
+             {
+                 pago.NroPago = nroCuota + 1;
+                 pago.FechaPago = DateTime.Now;
+                 pago.IdCon = contrato.IdContrato;
+                 pago.Importe = contrato.Monto / mes;
+                 rpa.Alta(pago);
+                 TempData["Mensaje"] = "Pago realizado exitosamente!!";
+                 return RedirectToAction("Buscar", "Contrato", new { id });
+             }
+
+         }
+         // GET: ContratoController/Buscar
+
+         public ActionResult Buscar(int id)
+         {
+             var lista = rpa.ObtenerTodosPorIdContrato(id);
+
+             ViewBag.IdSelect = id;
+             return View(lista);
+         }
+
+          // GET: ContratoController/BuscarDisponibles
+
+         public ActionResult BuscarDisponibles()
+         {
+             return View();
+         }
+
+         // GET: ContratoController/MostrarDisponibles
+
+         public ActionResult MostrarDisponibles(Contrato c)
+         {
+             var fechaInicio = c.FechaInicio;
+             var fechaFinal = c.FechaFin;
+             ViewBag.FechaInicioBusqueda = fechaInicio.Date.ToShortDateString();
+             ViewBag.FechaFinalBusqueda = fechaFinal.Date.ToShortDateString();
+             var lista = ri.ObtenerTodosDisponibles(fechaInicio, fechaFinal);
+             return View(lista);
+         }
+
+          // GET: ContratoController/BuscarVigentes
+
+         public ActionResult BuscarVigentes()
+         {
+             return View();
+         }
+
+         // GET: ContratoController/MostrarVigentes
+
+         public ActionResult MostrarVigentes(Contrato ca)
+         {
+             var fechaInicio = ca.FechaInicio;
+             var fechaFinal = ca.FechaFin;
+             ViewBag.FechaInicioBusqueda = fechaInicio.Date.ToShortDateString();
+             ViewBag.FechaFinalBusqueda = fechaFinal.Date.ToShortDateString();
+             var lista = rc.ObtenerTodosVigentes(fechaInicio, fechaFinal);
+             IList<Contrato> listar = new List<Contrato>();
+             foreach (var item in lista)
+             {
+                 listar.Add(item);
+             }
+             return View(lista);
+         }*/
     }
 
 }

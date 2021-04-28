@@ -22,7 +22,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
 
-        // GET: PropietarioController
+        // GET: PropietarioController/Index
         public ActionResult Index(int id)
         {
           
@@ -30,7 +30,7 @@ namespace InmobiliariaLucero.Controllers
             return View(lista);
         }
 
-        // GET: PropietarioController/Details/5
+        // GET: PropietarioController/Details
         public ActionResult Details(int id)
         {
             var sujeto = rp.ObtenerPorId(id);
@@ -69,7 +69,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: PropietarioController/Edit/5
+        // GET: PropietarioController/Edit
         public ActionResult Edit(int id)
         {
             var sujeto = rp.ObtenerPorId(id);
@@ -77,7 +77,7 @@ namespace InmobiliariaLucero.Controllers
             return View(sujeto);
         }
 
-        // POST: PropietarioController/Edit/5
+        // POST: PropietarioController/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(int id, Propietario p)
@@ -97,7 +97,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        // GET: PropietarioController/Delete/5
+        // GET: PropietarioController/Delete
       //  [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
@@ -106,7 +106,7 @@ namespace InmobiliariaLucero.Controllers
             return View(sujeto);
         }
 
-        // POST: PropietarioController/Delete/5
+        // POST: PropietarioController/Delete
         [HttpPost]
       //  [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
