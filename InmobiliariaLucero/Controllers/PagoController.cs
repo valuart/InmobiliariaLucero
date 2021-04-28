@@ -103,7 +103,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: PagoController/Delete
-      //  [Authorize(Policy = "Administrador")]
+       [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = rpa.ObtenerPorId(id);
@@ -113,8 +113,8 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: PagoController/Delete
         [HttpPost]
-      //  [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Pago pa)
         {
             try

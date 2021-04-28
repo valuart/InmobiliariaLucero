@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Models
 {
-    /*  public enum enRoles
+      public enum enRoles
           {
          SuperAdministrador = 1,
           Administrador = 2,
           Empleado = 3,
-      } */
+      } 
 
 
     public class Usuario
@@ -32,8 +32,8 @@ namespace InmobiliariaLucero.Models
     public string Clave { get; set; }
     public string Avatar { get; set; }
     public IFormFile AvatarFile { get; set; }
-    /*    [DisplayName("Rol")]
-    //    public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";
+        [DisplayName("Rol")]
+        public string RolNombre => Rol > 0 ? ((enRoles)Rol).ToString() : "";
 
         public static IDictionary<int, string> ObtenerRoles()
        {
@@ -44,7 +44,7 @@ namespace InmobiliariaLucero.Models
                 roles.Add((int)valor, Enum.GetName(tipoEnumRol, valor));
             }
            return roles;
-        } */
+        } 
 
 
 

@@ -89,6 +89,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: InquilinoController/Delete
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = rinq.ObtenerPorId(id);
@@ -100,6 +101,7 @@ namespace InmobiliariaLucero.Controllers
         // POST: InquilinoController/Delete
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Inquilino inquilino)
         {
             try

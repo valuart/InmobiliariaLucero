@@ -32,7 +32,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: UsuarioController/Index
-    //    [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Index()
         {
             var lista = ru.ObtenerTodos();
@@ -40,7 +40,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: UsuarioController/Details
-        //   [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Details(int id)
         {
             var e = ru.ObtenerPorId(id);
@@ -48,18 +48,18 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: UsuarioController/Create
-     //   [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Create()
         {
 
-         //   ViewBag.Roles = Usuario.ObtenerRoles();
+            ViewBag.Roles = Usuario.ObtenerRoles();
             return View();
         }
 
         // POST: UsuarioController/Create
         [HttpPost]
-    //    [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Create(Usuario u)
         {
             if (!ModelState.IsValid)
@@ -73,7 +73,7 @@ namespace InmobiliariaLucero.Controllers
                         iterationCount: 1000,
                         numBytesRequested: 256 / 8));
                 u.Clave = hashed;
-            //    u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
+                u.Rol = User.IsInRole("Administrador") ? u.Rol : (int)enRoles.Empleado;
                 var nbreRnd = Guid.NewGuid();//posible nombre aleatorio
                 int res = ru.Alta(u);
                 TempData["Id"] = u.IdUsuario;
@@ -100,7 +100,7 @@ namespace InmobiliariaLucero.Controllers
             }
             catch (Exception ex)
             {
-             //   ViewBag.Roles = Usuario.ObtenerRoles();
+                ViewBag.Roles = Usuario.ObtenerRoles();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
                 return View(u);
@@ -108,25 +108,25 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: Admin/Edit
-    //    [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Edit(int id)
         {
-           // ViewData["Title"] = "Editar usuario";
+            ViewData["Title"] = "Editar usuario";
             var sujeto = ru.ObtenerPorId(id);
-         //   ViewBag.Roles = Usuario.ObtenerRoles();
+            ViewBag.Roles = Usuario.ObtenerRoles();
             return View(sujeto);
         }
 
         // POST: Admin/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-    //    [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Edit(int id, Usuario u)
         {
-           // var vista = "Edit";
+            var vista = "Edit";
             try
             {
-                /* var usuario = ru.ObtenerPorId(id);
+                 var usuario = ru.ObtenerPorId(id);
                  if (User.IsInRole("Usuario"))
                  {
                      vista = "Perfil";
@@ -136,33 +136,33 @@ namespace InmobiliariaLucero.Controllers
                          return RedirectToAction(nameof(Index), "Home");
                      }
                      else
-                     {*/
+                     {
                         ru.Modificacion(u);
                         TempData["Mensaje"] = "Datos guardados correctamente";
                         return RedirectToAction(nameof(Index));
-                   // }
+                    }
 
-              /*  }
+               }
                 // TODO: Add update logic here
                 u.Clave = usuario.Clave;
                 u.Avatar = usuario.Avatar;
                 ru.Modificacion(u);
                 TempData["Mensaje"] = "Datos guardados correctamente";
 
-                return RedirectToAction(nameof(Index));*/
+                return RedirectToAction(nameof(Index));
 
             }
             catch (Exception ex)
             {
-        //        ViewBag.Roles = Usuario.ObtenerRoles();
+                ViewBag.Roles = Usuario.ObtenerRoles();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
-                return View(/* vista,*/ u);
+                return View( vista, u);
             }
         }
 
         // GET: Admin/Delete
-     //   [Authorize(Policy = "Administrador")]
+            [Authorize(Policy = "SuperAdministrador")] 
             public ActionResult Delete(int id)
             {
                 var u = ru.ObtenerPorId(id);
@@ -172,7 +172,7 @@ namespace InmobiliariaLucero.Controllers
             // POST: Admin/Delete
             [HttpPost]
             [ValidateAntiForgeryToken]
-     //       [Authorize(Policy = "Administrador")]
+            [Authorize(Policy = "SuperAdministrador")]
             public ActionResult Delete(int id, Usuario u)
             {
                 try
@@ -192,7 +192,7 @@ namespace InmobiliariaLucero.Controllers
         {
             ViewData["Title"] = "Mi perfil";
             var u = ru.ObtenerPorEmail(User.Identity.Name);
-      //      ViewBag.Roles = Usuario.ObtenerRoles();
+            ViewBag.Roles = Usuario.ObtenerRoles();
             return View("Edit", u);
         }
         // POST: UsuarioController/Perfil/5 
@@ -232,8 +232,9 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-        //  [Authorize
-        //  GET: UsuarioController/Avatar  
+
+        //  GET: UsuarioController/Avatar
+        [Authorize]
         public IActionResult Avatar()
         {
             var u = ru.ObtenerPorEmail(User.Identity.Name);
@@ -249,7 +250,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: UsuarioController/Foto
-     //   [Authorize]
+         [Authorize]
         public ActionResult Foto()
         {
             try
@@ -268,7 +269,7 @@ namespace InmobiliariaLucero.Controllers
             }
         }
         // GET: UsuarioController/Datos
-     //   [Authorize]
+        [Authorize]
         public ActionResult Datos()
         {
             try
@@ -288,8 +289,9 @@ namespace InmobiliariaLucero.Controllers
             }
         }
 
-    //   [AllowAnonymous] 
+
         // GET: UsuarioController/Login/
+        [AllowAnonymous] 
         public ActionResult Login(string returnUrl)
         {
             TempData["returnUrl"] = returnUrl;
@@ -299,7 +301,7 @@ namespace InmobiliariaLucero.Controllers
         // POST: UsuarioController/Login/
         [HttpPost]
         [ValidateAntiForgeryToken]
-    //    [AllowAnonymous]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(Login login)
         {
             try
@@ -326,7 +328,7 @@ namespace InmobiliariaLucero.Controllers
                     {
                         new Claim(ClaimTypes.Name, e.Email),
                         new Claim("FullName", e.Nombre + " " + e.Apellido),
-                //        new Claim(ClaimTypes.Role, e.RolNombre),
+                        new Claim(ClaimTypes.Role, e.RolNombre),
                     };
 
                     var claimsIdentity = new ClaimsIdentity(

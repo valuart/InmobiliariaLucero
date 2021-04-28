@@ -6,17 +6,11 @@
 
 <h1>Editar</h1>
 
-
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="IdUsuario" class="control-label"></label>
-                <input asp-for="IdUsuario" class="form-control" />
-                <span asp-validation-for="IdUsuario" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Nombre" class="control-label"></label>
                 <input asp-for="Nombre" class="form-control" />
@@ -33,49 +27,33 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label asp-for="Rol" class="control-label">Rol que ocupa</label>
+                <select asp-for="Rol" class="form-control" name="Rol" value="@Model.Rol">
+                    <option value="1">Super Administrador</option>
+                    <option value="2">Administrador</option>
+                    <option value="3">Empleado</option>
+                </select>
+                <span asp-validation-for="Rol" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Clave" class="control-label"></label>
                 <input asp-for="Clave" class="form-control" />
                 <span asp-validation-for="Clave" class="text-danger"></span>
             </div>
-            <!--if (User.IsInRole("Administrador") || User.IsInRole("SuperAdministrador"))
-    {
-        <div class="form-group">
-            <label class="control-label">Rol</label>
-            <select class="form-control" name="Rol">
-                foreach (var kvp in (IDictionary<int, string>)ViewBag.Roles)
-                {
-                    :<option (kvp.Key == Model.Rol ? "selected" : "") value="kvp.Key">kvp.Value</option>
-                }
-            </select>
-            <span asp-validation-for="Rol" class="text-danger"></span>
-        </div>
-    }-->
             <div class="form-group">
-                <label asp-for="Avatar" class="control-label"></label><br />
-                @if (Model.Avatar != "")
-                {
-                    <img src="@Model.Avatar" />
-                }
-                else
-                {
-                    <p>Sin avatar</p>
-                }
+                <label asp-for="AvatarFile" class="control-label"></label>
+                <input type="file" name="AvatarFile" />
+                <span asp-validation-for="AvatarFile" class="text-danger"></span>
+                <input asp-for="Avatar" value="@Model.Avatar" class="form-control" hidden />
             </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <input type="submit" value="Guardar" name="" class="button" />
-                </div>
 
-            </div>
-            <div class="row">
-                <div class="col-sm-12">
-                    <a asp-action="Index" class="buttonIndex btn">Regresar a la lista</a>
-                </div>
+            <div class="form-group">
+                < <input type="submit" value="Guardar" name="" class="button" />
             </div>
         </form>
     </div>
 </div>
-       
-@section Scripts {
-            @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-        }
+
+<div>
+    <a asp-action="Index">Volver a la lista</a>
+</div>

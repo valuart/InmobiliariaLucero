@@ -286,8 +286,9 @@ C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\R
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Delete.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Login.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Home\Seguro.cshtml.g.cs
-C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Home\Admin.cshtml.g.cs
-C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Home\Restringido.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Details.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Usuario\Perfil.cshtml.g.cs
 C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Contrato\Details.cshtml.g.cs
+C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Home\AlgoRestringido.cshtml.g.cs
+C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Home\Privado.cshtml.g.cs
+C:\Users\Blue\Documents\InmobiliariaLucero\InmobiliariaLucero\obj\Debug\net5.0\Razor\Views\Home\Restringido.cshtml.g.cs

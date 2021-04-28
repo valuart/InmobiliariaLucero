@@ -26,22 +26,22 @@ namespace InmobiliariaLucero.Controllers
         }
         public IActionResult Index()
         {
-          /*  if (User.IsInRole("SuperAdministrador"))
+            if (User.IsInRole("SuperAdministrador"))
             {
                 return RedirectToAction(nameof(Seguro));
             }
             else if (User.IsInRole("Administrador"))
             {
-                return RedirectToAction(nameof(Admin));
+                return RedirectToAction(nameof(AlgoRestringido));
             }
             else if (User.IsInRole("Empleado"))
             {
-                return RedirectToAction(nameof(Restringido));
+                return RedirectToAction(nameof(Privado));
             }
             else
-            {*/
+            {
                 return View();
-          //  }
+            }
 
         }
 
@@ -56,28 +56,32 @@ namespace InmobiliariaLucero.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-
-      /*  [Authorize(Policy = "SuperAdministrador")]
-        public ActionResult Seguro()
+        [Authorize(Policy = "SuperAdministrador")]
+        public IActionResult Seguro()
         {
             var identity = (ClaimsIdentity)User.Identity;
             IEnumerable<Claim> claims = identity.Claims;
             return View(claims);
-        }
-       
 
-        [Authorize(Policy = "Administrador")]
-        public ActionResult Admin()
-        {
-            var identity = (ClaimsIdentity)User.Identity;
-            IEnumerable<Claim> claims = identity.Claims;
-            return View(claims);
         }
 
         [Authorize(Policy = "Empleado")]
-        public ActionResult Restringido()
+        public IActionResult Privado()
+        {
+
+            return View();
+
+
+        }
+
+        [Authorize(Policy = "Administrador")]
+        public IActionResult AlgoRestringido()
         {
             return View();
-        } */
+        }
+        public IActionResult Restringido()
+        {
+            return View();
+        }
     }
 }

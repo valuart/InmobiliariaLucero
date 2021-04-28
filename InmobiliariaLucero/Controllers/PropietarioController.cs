@@ -7,7 +7,7 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
-  ///  [Authorize]
+  
     public class PropietarioController : Controller
     {
         private readonly IConfiguration configuration;
@@ -98,7 +98,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: PropietarioController/Delete
-      //  [Authorize(Policy = "Administrador")]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = rp.ObtenerPorId(id);
@@ -108,8 +108,8 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: PropietarioController/Delete
         [HttpPost]
-      //  [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
+        [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id, Propietario p)
         {
             try

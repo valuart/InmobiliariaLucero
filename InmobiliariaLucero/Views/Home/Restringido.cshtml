@@ -4,6 +4,11 @@
 }
 
 <h1>Restringido</h1>
-
-<p>¡No tiene permisos habilitados!</p>
+<h4>
+    <b>
+        @foreach (var u in User.Claims)
+        {
+        @u.Value<br />}
+    </b>
+</h4>
 

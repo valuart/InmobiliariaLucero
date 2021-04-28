@@ -159,7 +159,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: ContratoController/Delete
-       // [Authorize(Policy = "Administrador")]
+       [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var contrato = rc.ObtenerPorId(id);
@@ -199,7 +199,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: ContratoController/Delete
         [HttpPost]
-      //  [Authorize(Policy = "Administrador")]
+       [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Contrato c)
         {
