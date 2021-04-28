@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<InmobiliariaLucero.Models.Usuario>
 
+
 @{
     ViewData["Title"] = "Index";
 }
@@ -7,7 +8,7 @@
 <h1>Indice</h1>
 
 <p>
-    <a asp-action="Create">Crear</a>
+    <a asp-action="Create">Crear Usuario</a>
 </p>
 <table class="table">
     <thead>
@@ -33,43 +34,44 @@
             <th>
                 @Html.DisplayNameFor(model => model.Avatar)
             </th>
-            
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUsuario)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Apellido)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rol)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Clave)
-            </td>
-            <td>
-                <img width="32" src="@item.Avatar">
-            </td>
-           
-            <td>
-              
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IdUsuario)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Clave)
+                </td>
+                <td>
+                    <img width="32" src="@item.Avatar">
+                </td>
+
+                <td>
+
                     @Html.ActionLink("Editar", "Edit", new { id = item.IdUsuario }) |
                     @Html.ActionLink("Detalle", "Details", new { id = item.IdUsuario }) |
                     @Html.ActionLink("Eliminar", "Delete", new { id = item.IdUsuario });
 
-            </td>
-        </tr>
-}
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

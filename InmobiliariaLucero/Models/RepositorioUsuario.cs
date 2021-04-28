@@ -3,8 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace InmobiliariaLucero.Models
 {
@@ -14,7 +13,6 @@ namespace InmobiliariaLucero.Models
 		{
 
 		}
-
 		public int Alta(Usuario u)
 		{
 			int res = -1;
@@ -69,8 +67,7 @@ namespace InmobiliariaLucero.Models
 			int res = -1;
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"UPDATE Usuario SET Nombre=@nombre, Apellido=@apellido, Email=@email, Rol=@rol, Clave=@clave, Avatar=@avatar,  " +
-					$"WHERE IdUsuario = @idUsuario";
+				string sql = $"UPDATE Usuario SET Nombre=@nombre, Apellido=@apellido, Email=@email, Rol=@rol, Clave=@clave WHERE IdUsuario = @idUsuario";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
@@ -79,7 +76,7 @@ namespace InmobiliariaLucero.Models
 					command.Parameters.AddWithValue("@email", u.Email);
 					command.Parameters.AddWithValue("@rol", u.Rol);
 					command.Parameters.AddWithValue("@clave", u.Clave);
-					command.Parameters.AddWithValue("@avatar", u.Avatar);			
+					//command.Parameters.AddWithValue("@avatar", u.Avatar);			
 					command.Parameters.AddWithValue("@idUsuario", u.IdUsuario);
 					connection.Open();
 					res = command.ExecuteNonQuery();
@@ -155,7 +152,7 @@ namespace InmobiliariaLucero.Models
 			return u;
 		}
 
-		public Usuario ObtenerPorEmail(string email)
+		public Usuario ObtenerPorEmail(string Email)
 		{
 			Usuario u = null;
 			using (SqlConnection connection = new SqlConnection(connectionString))
@@ -165,7 +162,7 @@ namespace InmobiliariaLucero.Models
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
 					command.CommandType = CommandType.Text;
-					command.Parameters.Add("@email", SqlDbType.VarChar).Value = email;
+					command.Parameters.Add("@email", SqlDbType.VarChar).Value = Email;
 					connection.Open();
 					var reader = command.ExecuteReader();
 					if (reader.Read())
@@ -188,7 +185,7 @@ namespace InmobiliariaLucero.Models
 			return u;
 		}
 
-		public IList<Usuario> BuscarPorNombre(string nombre)
+		public IList<Usuario> BuscarPorNombre(string Nombre)
 		{
 			List<Usuario> res = new List<Usuario>();
 			Usuario u = null;
@@ -198,7 +195,7 @@ namespace InmobiliariaLucero.Models
 					$" WHERE Nombre LIKE %@nombre% OR Apellido LIKE %@nombre";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
-					command.Parameters.Add("@nombre", SqlDbType.VarChar).Value = nombre;
+					command.Parameters.Add("@nombre", SqlDbType.VarChar).Value = Nombre;
 					command.CommandType = CommandType.Text;
 					connection.Open();
 					var reader = command.ExecuteReader();

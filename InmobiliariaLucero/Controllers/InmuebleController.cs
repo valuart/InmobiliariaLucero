@@ -8,7 +8,7 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class InmuebleController : Controller
     {
         private readonly IConfiguration configuration;
@@ -17,14 +17,15 @@ namespace InmobiliariaLucero.Controllers
         private readonly RepositorioPropietario rp;
         private readonly RepositorioContrato rc;
 
-        public InmuebleController(IConfiguration configuration, IWebHostEnvironment environment, RepositorioInmueble ri, RepositorioPropietario rp, RepositorioContrato rc )
+        public InmuebleController(IConfiguration configuration, IWebHostEnvironment environment)
         {
             this.configuration = configuration;
             this.environment = environment;
-            this.ri = ri;
-            this.rp = rp;
-            this.rc = rc;
-           
+            ri = new RepositorioInmueble(configuration);
+            rp = new RepositorioPropietario (configuration);
+            rc = new RepositorioContrato (configuration);
+
+
         }
         // GET: InmuebleController
         public ActionResult Index(int id)
@@ -106,18 +107,18 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: InmuebleController/Delete/5
-        [Authorize(Policy = "Administrador")]
+      //  [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = ri.ObtenerPorId(id);
-            ViewBag.lugar = sujeto.Propietario.Nombre + " " + sujeto.Propietario.Apellido + " en " + sujeto.Direccion;
+            //ViewBag.lugar = sujeto.Propietario.Nombre + " " + sujeto.Propietario.Apellido + " en " + sujeto.Direccion;
             return View(sujeto);
 
         }
 
         // POST: InmuebleController/Delete/5
         [HttpPost]
-        [Authorize(Policy = "Administrador")]
+    //   [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Inmueble inmueble)
         {

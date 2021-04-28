@@ -86,8 +86,7 @@ namespace InmobiliariaLucero.Models
 			IList<Inquilino> res = new List<Inquilino>();
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
-				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email" +
-					$" FROM Inquilino" +
+				string sql = $"SELECT IdInquilino, Nombre, Apellido, Dni, Telefono, Email FROM Inquilino" +
 					$" ORDER BY Apellido, Nombre";
 
 				using (SqlCommand command = new SqlCommand(sql, connection))

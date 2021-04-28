@@ -26,7 +26,7 @@ namespace InmobiliariaLucero.Controllers
         }
         public IActionResult Index()
         {
-            if (User.IsInRole("SuperAdministrador"))
+          /*  if (User.IsInRole("SuperAdministrador"))
             {
                 return RedirectToAction(nameof(Seguro));
             }
@@ -39,9 +39,9 @@ namespace InmobiliariaLucero.Controllers
                 return RedirectToAction(nameof(Restringido));
             }
             else
-            {
+            {*/
                 return View();
-            }
+          //  }
 
         }
 
@@ -57,7 +57,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
 
-        [Authorize(Policy = "SuperAdministrador")]
+      /*  [Authorize(Policy = "SuperAdministrador")]
         public ActionResult Seguro()
         {
             var identity = (ClaimsIdentity)User.Identity;
@@ -69,15 +69,15 @@ namespace InmobiliariaLucero.Controllers
         [Authorize(Policy = "Administrador")]
         public ActionResult Admin()
         {
-            Propietario p = rp.ObtenerPorEmail(User.Identity.Name);
-            var lista = ri.BuscarPorPropietario(p.IdPropietario);
-            return View(lista);
+            var identity = (ClaimsIdentity)User.Identity;
+            IEnumerable<Claim> claims = identity.Claims;
+            return View(claims);
         }
 
         [Authorize(Policy = "Empleado")]
         public ActionResult Restringido()
         {
             return View();
-        } 
+        } */
     }
 }

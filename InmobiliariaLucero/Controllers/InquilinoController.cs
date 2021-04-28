@@ -7,23 +7,20 @@ using System;
 
 namespace InmobiliariaLucero.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class InquilinoController : Controller
     {
         private readonly IConfiguration configuration;
         private readonly RepositorioInquilino rinq;
 
-        public InquilinoController(IConfiguration configuration, RepositorioInquilino rinq)
+        public InquilinoController(IConfiguration configuration)
         {
             this.configuration = configuration;
-            this.rinq = rinq;
+            rinq = new RepositorioInquilino(configuration);
         }
 
-
-
-
         // GET: InquilinoController
-        public ActionResult Index(int id)
+        public ActionResult Index()
         {
          
             var lista = rinq.ObtenerTodos();

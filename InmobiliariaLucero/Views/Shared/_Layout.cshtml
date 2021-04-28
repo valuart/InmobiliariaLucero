@@ -27,106 +27,102 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Login">Ingresar</a>
                         </li>
-                        @if (User.IsInRole("SuperAdministrador"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuario</a>
-                            </li>
-                        }
-                        @if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Index">Propietarios</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Index">Inquilinos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Index">Inmueble</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Contrato" asp-action="Index">Contratos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Pagos" asp-action="Index">Pagos</a>
-                            </li>
-}
-                        @if (User.IsInRole("SuperAdministrador") || User.IsInRole("Administrador") || User.IsInRole("Empleado"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Logout">Salir</a>
-                            </li>
+                        <!--  if (User.IsInRole("SuperAdministrador"))
+    {-->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Index">Usuario</a>
+                        </li>
+                        <!--  }
+                    <!--    if (User.IsInRole("Administrador") || User.IsInRole("Empleado"))
+    {-->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Propietario" asp-action="Index">Propietarios</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inquilino" asp-action="Index">Inquilinos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Inmueble" asp-action="Index">Inmuebles</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Contrato" asp-action="Index">Contratos</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Pago" asp-action="Index">Pagos</a>
+                        </li>
+                        <!--   }
+       if (User.IsInRole("SuperAdministrador") || User.IsInRole("Administrador") || User.IsInRole("Empleado"))
+       {-->
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Usuario" asp-action="Logout">Salir</a>
+                        </li>
                         }
 
                     </ul>
+                    </div>
                 </div>
-            </div>
-        </nav>
-    </header>
-    <main role="main" class="container">
-        <div class="">
-            @if (ViewBag.Id != null)
-            {//alta exitosa
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <strong>¡Éxito!</strong> La entidad fue dada de alta con id: @ViewBag.Id
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
-                    </button>
-                </div> }
-            else if (ViewBag.Mensaje != null)
-            {//cartel general
-                <div class="alert alert-info alert-dismissible fade show" role="alert">
-                    <strong>Información:</strong> @ViewBag.Mensaje
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
-                    </button>
-                </div> }
-            else if (ViewBag.Error != null)
-            {//alta exitosa
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>¡Error!</strong> @ViewBag.Error
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
-                    </button>
-                </div> }
-            else if (!String.IsNullOrWhiteSpace(ViewBag.Error))
-            {//ocurrió un error
-                <environment names="Development">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <strong>¡Error!</strong> Ocurrió: @ViewBag.Error
+            </nav>
+        </header>
+        <main role="main" class="container">
+            <div class="">
+                @if (ViewBag.Id != null)
+                {//alta exitosa
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>¡Éxito!</strong> La entidad fue dada de alta con id: @ViewBag.Id
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
                         </button>
-                        <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"><span class="lnr lnr-plus-circle"></span></a>
-                        <div class="collapse multi-collapse" id="multiCollapseExample1">
-                            @ViewBag.StackTrace
+                    </div> }
+                else if (ViewBag.Mensaje != null)
+                {//cartel general
+                    <div class="alert alert-info alert-dismissible fade show" role="alert">
+                        <strong>Información:</strong> @ViewBag.Mensaje
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+                        </button>
+                    </div> }
+                else if (ViewBag.Error != null)
+                {//alta exitosa
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>¡Error!</strong> @ViewBag.Error
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+                        </button>
+                    </div> }
+                else if (!String.IsNullOrWhiteSpace(ViewBag.Error))
+                {//ocurrió un error
+                    <environment names="Development">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>¡Error!</strong> Ocurrió: @ViewBag.Error
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true"><span class="lnr lnr-cross-circle"></span></span>
+                            </button>
+                            <a class="btn btn-primary" data-toggle="collapse" href="#multiCollapseExample1" role="button" aria-expanded="false"><span class="lnr lnr-plus-circle"></span></a>
+                            <div class="collapse multi-collapse" id="multiCollapseExample1">
+                                @ViewBag.StackTrace
+                            </div>
                         </div>
-                    </div>
-                </environment>}
-            <div class="m-1 p-1">
-                @RenderBody()
+                    </environment>}
+                <div class="m-1 p-1">
+                    @RenderBody()
+                </div>
             </div>
-        </div>
-    </main>
-  
-    <div class="container">
-        <main role="main">
-            @RenderBody()
         </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - InmobiliariaLucero - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <main role="main">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2021 - InmobiliariaLucero - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            </div>
+        </footer>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
+    </html>

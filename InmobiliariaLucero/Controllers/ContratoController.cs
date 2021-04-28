@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class ContratoController : Controller
     {
         private readonly IConfiguration configuration;
@@ -19,16 +19,16 @@ namespace InmobiliariaLucero.Controllers
         private readonly RepositorioInquilino rinq;
         private readonly RepositorioPago rpa;
 
-        public ContratoController(RepositorioContrato rc, RepositorioInmueble ri, RepositorioInquilino rinq, RepositorioPago rpa, IConfiguration configuration)
+        public ContratoController(IConfiguration configuration)
         {
-            this.rc = rc;
-            this.ri= ri;
-            this.rinq = rinq;
-            this.rpa = rpa;
+            rc = new RepositorioContrato(configuration);
+            ri= new RepositorioInmueble(configuration);
+            rinq = new RepositorioInquilino(configuration);
+            rpa = new RepositorioPago(configuration);
             this.configuration = configuration;
         }
         // GET: ContratoController
-        public ActionResult Index()
+        public ActionResult Index(int id)
         {
             var lista = rc.ObtenerTodos();
             return View(lista);
@@ -47,68 +47,73 @@ namespace InmobiliariaLucero.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Contrato c)
         {
-            var res = 0;
+           // var res = 0;
             try
             {
-                if (ModelState.IsValid)
-                {
-                    var contratos = rc.ObtenerPorInmuebleId(c.IdInmu);
-                    var fechFin = c.FechaFin;
-                    var fechIni = c.FechaInicio;
-                    var count = contratos.Count;
+                int res = rc.Alta(c);
+                Inquilino i = rinq.ObtenerPorId(c.IdInqui);
+                TempData["Id"] = c.IdContrato;
+                return RedirectToAction(nameof(Index));
 
-                    IList<Contrato> ctosNuevos = new List<Contrato>();
-                    foreach (var item in contratos)
-                    {
-                        if (item.Estado)
-                        {
-                            if (fechIni < item.FechaInicio && fechFin < item.FechaInicio)
-                            {
-                                ctosNuevos.Add(item);
-                            }
-                            else if (fechIni < item.FechaInicio && fechFin > item.FechaInicio)
-                            {
-                                ViewBag.Error = "La fecha de finalizacion solicitada para ese inmueble deberia ser menor a " + item.FechaInicio;
-                            }
-                            else if (fechIni > item.FechaFin && fechFin > item.FechaFin)
-                            {
-                                ctosNuevos.Add(item);
-                            }
-                            else if (fechIni > item.FechaFin && fechFin < item.FechaFin)
-                            {
-                                ViewBag.Error = "La fecha de finalizacion solicitada para ese inmueble deberia ser mayor a " + item.FechaFin;
-                            }
-                            else
-                            {
-                                ViewBag.Error = "La fecha de inicio solicitada para ese inmueble no deberia estar entre " + item.FechaInicio + "  -  " + item.FechaFin;
-                            }
+                /* if (ModelState.IsValid)
+                 {
+                     var contratos = rc.ObtenerPorInmuebleId(c.IdInmu);
+                     var fechFin = c.FechaFin;
+                     var fechIni = c.FechaInicio;
+                     var count = contratos.Count;
 
-                        }
+                     IList<Contrato> ctosNuevos = new List<Contrato>();
+                     foreach (var item in contratos)
+                     {
+                         if (item.Estado)
+                         {
+                             if (fechIni < item.FechaInicio && fechFin < item.FechaInicio)
+                             {
+                                 ctosNuevos.Add(item);
+                             }
+                             else if (fechIni < item.FechaInicio && fechFin > item.FechaInicio)
+                             {
+                                 ViewBag.Error = "La fecha de finalizacion solicitada para ese inmueble deberia ser menor a " + item.FechaInicio;
+                             }
+                             else if (fechIni > item.FechaFin && fechFin > item.FechaFin)
+                             {
+                                 ctosNuevos.Add(item);
+                             }
+                             else if (fechIni > item.FechaFin && fechFin < item.FechaFin)
+                             {
+                                 ViewBag.Error = "La fecha de finalizacion solicitada para ese inmueble deberia ser mayor a " + item.FechaFin;
+                             }
+                             else
+                             {
+                                 ViewBag.Error = "La fecha de inicio solicitada para ese inmueble no deberia estar entre " + item.FechaInicio + "  -  " + item.FechaFin;
+                             }
 
-                    }
-                    if (count == ctosNuevos.Count)
-                    {
-                        c.Estado = true;
-                        res = rc.Alta(c);
-                        TempData["Id"] = c.IdContrato;
-                        return RedirectToAction(nameof(Index));
-                    }
-                    else
-                    {
-                        ViewBag.Inmueble = ri.ObtenerTodos();
-                        ViewBag.Inquilino = rinq.ObtenerTodos();
-                        return View(c);
-                    }
+                         }
 
-                }
-                else
+                     }
+                     if (count == ctosNuevos.Count)
+                     {
+                         c.Estado = true;
+                         res = rc.Alta(c);
+                         TempData["Id"] = c.IdContrato;
+                         return RedirectToAction(nameof(Index));
+                     }
+                     else
+                     {
+                         ViewBag.Inmueble = ri.ObtenerTodos();
+                         ViewBag.Inquilino = rinq.ObtenerTodos();
+                         return View(c);
+                     }
 
-                    return View(c);
+                 }
+                 else
+
+                return View(c);*/
 
             }
             catch (Exception ex)
             {
-
+                ViewBag.Inquilino = rinq.ObtenerTodos();
                 ViewBag.Error = ex.Message;
                 ViewBag.StackTrate = ex.StackTrace;
                 return View(c);
@@ -145,7 +150,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: ContratoController/Delete/5
-        [Authorize(Policy = "Administrador")]
+       // [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var contrato = rc.ObtenerPorId(id);
@@ -185,7 +190,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: ContratoController/Delete/5
         [HttpPost]
-        [Authorize(Policy = "Administrador")]
+      //  [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Contrato c)
         {
@@ -210,6 +215,7 @@ namespace InmobiliariaLucero.Controllers
 
             }
         }
+        // GET: ContratoController/Renovar/5
         public ActionResult Renovar(int id)
         {
             var c = rc.ObtenerPorId(id);
@@ -228,6 +234,7 @@ namespace InmobiliariaLucero.Controllers
             ViewBag.Inmueble = i;
             return View(c);
         }
+        // POST: ContratoController/Renovar/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Renovar(int id, Contrato c)
@@ -257,6 +264,7 @@ namespace InmobiliariaLucero.Controllers
                 return View(c);
             }
         }
+        // GET: ContratoController/Pagos/5
         public ActionResult Pagos(int id)
         {
             var contrato = rc.ObtenerPorId(id);
@@ -275,6 +283,7 @@ namespace InmobiliariaLucero.Controllers
 
             return View(pago);
         }
+        // POST: ContratoController/Pagos/5
         public ActionResult Pagos(int id, Pago pago)
         {
             var contrato = rc.ObtenerPorId(id);
@@ -302,7 +311,7 @@ namespace InmobiliariaLucero.Controllers
             }
 
         }
-
+        // GET: ContratoController/Buscar/5
         public ActionResult Buscar(int id)
         {
             var lista = rpa.ObtenerTodosPorIdContrato(id);
@@ -319,6 +328,7 @@ namespace InmobiliariaLucero.Controllers
             var lista = ri.ObtenerTodosDisponibles(fechaInicio, fechaFinal);
             return View(lista);
         }
+        // GET: ContratoController/MostrarVigentes/5
         public ActionResult MostrarVigentes(Contrato ca)
         {
             var fechaInicio = ca.FechaInicio;

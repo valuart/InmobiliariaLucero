@@ -10,21 +10,21 @@ using System.Threading.Tasks;
 
 namespace InmobiliariaLucero.Controllers
 {
-    [Authorize]
+   // [Authorize]
     public class PagoController : Controller
     {
-        private readonly IConfiguration config;
+        private readonly IConfiguration configuration;
         private readonly RepositorioPago rpa;
         private readonly RepositorioContrato rc;
 
-        public PagoController(IConfiguration config, RepositorioPago rpa, RepositorioContrato rc)
+        public PagoController(IConfiguration configuration)
         {
-            this.config = config;
-            this.rpa = rpa;
-            this.rc = rc;
+            this.configuration = configuration;
+            rc = new RepositorioContrato(configuration);
+            rpa = new RepositorioPago(configuration);
         }
         // GET: PagoController
-        public ActionResult Index(int id)
+        public ActionResult Index()
         {
             var lista = rpa.ObtenerTodos();
             return View(lista);
@@ -40,8 +40,10 @@ namespace InmobiliariaLucero.Controllers
         // GET: PagoController/Create
         public ActionResult Create()
         {
+            
             return View();
         }
+    
 
         // POST: PagoController/Create
         [HttpPost]
@@ -50,9 +52,17 @@ namespace InmobiliariaLucero.Controllers
         {
             try
             {
-                rpa.Alta(pa);
-                TempData["Id"] = "efectuó el pago";
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    rpa.Alta(pa);
+                    TempData["Id"] = pa.IdPago;
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ViewBag.Contrato = rc.ObtenerTodos();
+                    return View(pa);
+                }
 
             }
             catch (Exception ex)
@@ -93,7 +103,7 @@ namespace InmobiliariaLucero.Controllers
         }
 
         // GET: PagoController/Delete/5
-        [Authorize(Policy = "Administrador")]
+      //  [Authorize(Policy = "Administrador")]
         public ActionResult Delete(int id)
         {
             var sujeto = rpa.ObtenerPorId(id);
@@ -103,7 +113,7 @@ namespace InmobiliariaLucero.Controllers
 
         // POST: PagoController/Delete/5
         [HttpPost]
-        [Authorize(Policy = "Administrador")]
+      //  [Authorize(Policy = "Administrador")]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Pago pa)
         {

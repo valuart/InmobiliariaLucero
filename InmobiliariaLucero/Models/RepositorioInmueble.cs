@@ -22,7 +22,7 @@ namespace InmobiliariaLucero.Models
 			using (SqlConnection connection = new SqlConnection(connectionString))
 			{
 				string sql = $"INSERT INTO Inmueble ( IdPropie, Direccion,Tipo, Precio, Estado) " +
-					$"VALUES (@idPropietario, @direccion, @tipo, @precio @estado); " +
+					$"VALUES (@idPropietario, @direccion, @tipo, @precio, @estado); " +
 					$"SELECT SCOPE_IDENTITY();";
 				using (SqlCommand command = new SqlCommand(sql, connection))
 				{
